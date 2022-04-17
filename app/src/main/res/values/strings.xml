@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MyProduction</string>
+    <string name="image">image</string>
+
+    <string-array name="status">
+        <item>Aktif</item>
+        <item>Blokir</item>
+    </string-array>
+
+</resources>
