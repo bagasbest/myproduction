@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.project.myproduction" >
+    package="com.project.myproduction">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,7 +10,28 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyProduction" >
+        android:theme="@style/Theme.MyProduction">
+        <activity
+            android:name=".ui.obat_racikan.material.MaterialDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.obat_racikan.material.MaterialActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.obat_racikan.material.MaterialAddEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.obat_racikan.FormulatedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.obat_umum.HerbsDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.obat_umum.HerbsAddEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.obat_umum.SingleHerbsActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.settings.managing_sales.ManagingSalesDetailActivity"
             android:exported="false" />
@@ -31,7 +52,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

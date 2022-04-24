@@ -26,6 +26,11 @@ class LoginActivity : AppCompatActivity() {
         val prefs: SharedPreferences = getSharedPreferences(
             "myproduction", Context.MODE_PRIVATE
         )
+        intent.getStringExtra(STATUS).also {
+            if (it != null) {
+                status = it
+            }
+        }
         autoLogin()
 
         binding?.login?.setOnClickListener {
@@ -34,21 +39,12 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun autoLogin() {
-        val user = FirebaseAuth.getInstance().currentUser
-        if(user != null) {
-            FirebaseFirestore
-                .getInstance()
-                .collection("users")
-                .document(user.uid)
-                .get()
-                .addOnSuccessListener {
-                    status = "" + it.data!!["role"]
-                    if(status != "Block") {
-                        startActivity(Intent(this, HomeActivity::class.java))
-                    } else {
-                        showBlockAlert()
-                    }
-                }
+        if(FirebaseAuth.getInstance().currentUser != null) {
+            if(status != "Block") {
+                startActivity(Intent(this, HomeActivity::class.java))
+            } else {
+                showBlockAlert()
+            }
         }
     }
 
@@ -142,5 +138,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         binding = null
+    }
+
+    companion object {
+        const val STATUS = "status"
     }
 }

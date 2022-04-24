@@ -5,14 +5,24 @@
       <map>
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/drawable/bg_login.xml" value="0.1765" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/drawable/bg_rounded_btn.xml" value="0.1765" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_formulated.xml" value="0.264" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_herbs_add_edit.xml" value="0.176" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_herbs_detail.xml" value="0.2" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_home.xml" value="0.23645833333333333" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_login.xml" value="0.23645833333333333" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_main.xml" value="0.23645833333333333" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_managing_sales.xml" value="0.2" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_managing_sales_detail.xml" value="0.2" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_material.xml" value="0.19410004275331338" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_material_add.xml" value="0.2" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_material_detail.xml" value="0.19410004275331338" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_register.xml" value="0.23645833333333333" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_settings.xml" value="0.23645833333333333" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_single_herbs.xml" value="0.2" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_filter.xml" value="0.2" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_herbs.xml" value="0.4" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_sales.xml" value="0.264" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/popup_add_stock.xml" value="0.2" />
       </map>
     </option>
   </component>
