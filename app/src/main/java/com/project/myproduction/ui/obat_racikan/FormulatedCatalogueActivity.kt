@@ -1,4 +1,4 @@
-package com.project.myproduction.ui.obat_racikan.material
+package com.project.myproduction.ui.obat_racikan
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,16 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
 import com.project.myproduction.R
-import com.project.myproduction.databinding.ActivityMaterialBinding
-import com.project.myproduction.ui.obat_umum.HerbsViewModel
+import com.project.myproduction.databinding.ActivityFormulatedCatalogueBinding
+import com.project.myproduction.ui.obat_racikan.material.MaterialAdapter
+import com.project.myproduction.ui.obat_racikan.material.MaterialViewModel
 
-class MaterialActivity : AppCompatActivity() {
+class FormulatedCatalogueActivity : AppCompatActivity() {
 
-    private var binding: ActivityMaterialBinding? = null
-    private var adapter: MaterialAdapter?= null
+    private var binding: ActivityFormulatedCatalogueBinding? = null
+    private var adapter: FormulatedAdapter?= null
     private var from: String? = null
     private var to: String? = null
-
 
     override fun onResume() {
         super.onResume()
@@ -29,12 +29,11 @@ class MaterialActivity : AppCompatActivity() {
         initViewModel("")
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMaterialBinding.inflate(layoutInflater)
+        binding = ActivityFormulatedCatalogueBinding.inflate(layoutInflater)
         setContentView(binding?.root)
-
-
 
         binding?.settingBtn?.setOnClickListener {
             onBackPressed()
@@ -66,6 +65,7 @@ class MaterialActivity : AppCompatActivity() {
             sortProduct()
         }
     }
+
 
     private fun sortProduct() {
         val view: View = layoutInflater.inflate(R.layout.item_filter, null)
@@ -126,41 +126,41 @@ class MaterialActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        binding?.rvMaterial?.layoutManager = LinearLayoutManager(this)
-        adapter = MaterialAdapter()
-        binding?.rvMaterial?.adapter = adapter
+        binding?.rvFormulated?.layoutManager = LinearLayoutManager(this)
+        adapter = FormulatedAdapter()
+        binding?.rvFormulated?.adapter = adapter
     }
 
     private fun initViewModel(query: String) {
-        val viewModel = ViewModelProvider(this)[MaterialViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[FormulatedViewModel::class.java]
 
         binding?.progressBar?.visibility = View.VISIBLE
         when (query) {
             "" -> {
-                viewModel.setListMaterial()
+                viewModel.setListFormula()
             }
             "upperPrice" -> {
-                viewModel.setListMaterialOrderByUpperPrice()
+                viewModel.setListFormulaOrderByUpperPrice()
             }
             "lowerPrice" -> {
-                viewModel.setListMaterialOrderByLowerPrice()
+                viewModel.setListFormulaOrderByLowerPrice()
             }
             "upperStock" -> {
-                viewModel.setListMaterialOrderByUpperStock()
+                viewModel.setListFormulaOrderByUpperStock()
             }
             "lowerStock" -> {
-                viewModel.setListMaterialOrderByLowerStock()
+                viewModel.setListFormulaOrderByLowerStock()
             }
             "priceRange" -> {
-                viewModel.setListMaterialOrderByPriceRange(from?.toLong(), to?.toLong())
+                viewModel.setListFormulaOrderByPriceRange(from?.toLong(), to?.toLong())
             }
             else -> {
-                viewModel.setListMaterialOrderByQuery(query)
+                viewModel.setListFormulaOrderByQuery(query)
             }
         }
-        viewModel.getMaterial().observe(this) { herbList ->
-            if (herbList.size > 0) {
-                adapter?.setData(herbList)
+        viewModel.getFormula().observe(this) { formulaList ->
+            if (formulaList.size > 0) {
+                adapter?.setData(formulaList)
                 binding?.noData?.visibility = View.GONE
             } else {
                 binding?.noData?.visibility = View.VISIBLE

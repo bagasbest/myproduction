@@ -33,6 +33,16 @@ class FormulatedActivity : AppCompatActivity() {
             val intent = Intent(this, MaterialActivity::class.java)
             startActivity(intent)
         }
+
+        binding?.addFormulated?.setOnClickListener {
+            val intent = Intent(this, FormulatedAddEditActivity::class.java)
+            intent.putExtra(FormulatedAddEditActivity.OPTION, "add")
+            startActivity(intent)
+        }
+
+        binding?.formulatedList?.setOnClickListener {
+            startActivity(Intent(this, FormulatedCatalogueActivity::class.java))
+        }
     }
 
     private fun initView() {
