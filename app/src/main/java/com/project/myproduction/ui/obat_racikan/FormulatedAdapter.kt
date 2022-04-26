@@ -3,6 +3,7 @@ package com.project.myproduction.ui.obat_racikan
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -30,21 +31,13 @@ class FormulatedAdapter : RecyclerView.Adapter<FormulatedAdapter.ViewHolder>() {
             val format: NumberFormat = DecimalFormat("#,###")
             with(binding) {
 
+                linearLayout.visibility = View.GONE
+
                 name.text = model.name
                 code.text = "Kode: ${model.code}"
                 type.text = "Jenis: ${model.type}"
                 price.text = "Harga: Rp.${format.format(model.price)}"
-                stock.text = "Stok: ${model.stock}"
 
-                if (model.stock!! > 0) {
-                    linearLayout.backgroundTintList =
-                        ContextCompat.getColorStateList(itemView.context, R.color.blue)
-                } else {
-                    linearLayout.backgroundTintList = ContextCompat.getColorStateList(
-                        itemView.context,
-                        android.R.color.holo_red_light
-                    )
-                }
 
                 cv.setOnClickListener {
                     val intent = Intent(itemView.context, FormulatedDetailActivity::class.java)

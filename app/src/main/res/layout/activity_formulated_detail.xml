@@ -7,7 +7,6 @@
     tools:context=".ui.obat_racikan.FormulatedDetailActivity">
 
 
-
     <ImageButton
         android:id="@+id/settingBtn"
         android:layout_width="40dp"
@@ -41,13 +40,13 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
-        android:visibility="gone"
         android:layout_marginTop="16dp"
-        android:background="@drawable/bg_rounded_btn"
         android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_rounded_btn"
         android:backgroundTint="@color/blue"
         android:contentDescription="@string/image"
         android:src="@drawable/ic_baseline_edit_24"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/delete"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -55,13 +54,13 @@
         android:id="@+id/delete"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginEnd="16sp"
-        android:visibility="gone"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16sp"
         android:background="@drawable/bg_rounded_btn"
         android:backgroundTint="@color/blue"
         android:contentDescription="@string/image"
         android:src="@drawable/ic_baseline_delete_24"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -195,11 +194,48 @@
                 android:layout_marginTop="16dp"
                 tools:listitem="@layout/item_material" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_marginTop="16dp"
+                android:background="#E6E6E6" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="16dp"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:hint="Kuantitas racikan yang ingin dipesan"
+                    android:id="@+id/qtyProduct" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Tambahkan Ke Daftar PO"
+                android:id="@+id/addProductBtn"
+                android:textAllCaps="false" />
+
         </LinearLayout>
 
 
     </ScrollView>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

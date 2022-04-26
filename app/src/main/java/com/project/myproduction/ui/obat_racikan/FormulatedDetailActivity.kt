@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
@@ -19,12 +20,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.project.myproduction.R
 import com.project.myproduction.databinding.ActivityFormulatedDetailBinding
 import java.text.DecimalFormat
+import java.util.*
 
 class FormulatedDetailActivity : AppCompatActivity() {
 
     private var binding: ActivityFormulatedDetailBinding? = null
-    private var model: FormulatedModel ? = null
+    private var model: FormulatedModel? = null
     private var adapter: FormulatedMaterialAdapter? = null
+    private var name: String? = null
+    private var userId: String? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,11 +67,87 @@ class FormulatedDetailActivity : AppCompatActivity() {
         binding?.addStock?.setOnClickListener {
             addStock()
         }
+        binding?.addProductBtn?.setOnClickListener {
+            formValidation()
+        }
+    }
+
+    private fun formValidation() {
+        val qtyProduct = binding?.qtyProduct?.text.toString().trim()
+        if (qtyProduct.isEmpty() || qtyProduct.toInt() <= 0) {
+            Toast.makeText(this, "Minimal pemesanan 1 produk", Toast.LENGTH_SHORT).show()
+        } else {
+            binding?.progressBar?.visibility = View.VISIBLE
+            for (index in model?.material?.indices!!) {
+                if (model?.material!![index].stock!! < model?.material!![index].qty?.times(
+                        qtyProduct.toLong()
+                    )!!
+                ) {
+                    Toast.makeText(
+                        this,
+                        "stok bahan baku ${model?.material!![index].name} tidak mencukupi",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    binding?.progressBar?.visibility = View.GONE
+                    return
+                }
+            }
+
+            val uid = System.currentTimeMillis().toString()
+
+            val data = mapOf(
+                "uid" to uid,
+                "name" to model?.name,
+                "nameTemp" to model?.name?.lowercase(Locale.getDefault()),
+                "code" to model?.code,
+                "type" to model?.type,
+                "price" to model?.price!! * qtyProduct.toLong(),
+                "qty" to qtyProduct.toLong(),
+                "salesName" to name,
+                "salesId" to userId,
+                "productId" to model?.uid,
+                "productStock" to model?.stock,
+                "category" to "formulated"
+            )
+
+            FirebaseFirestore
+                .getInstance()
+                .collection("purchase_order")
+                .document(uid)
+                .set(data)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        binding?.progressBar?.visibility = View.GONE
+                        showSuccessDialog()
+                    } else {
+                        binding?.progressBar?.visibility = View.GONE
+                        showFailureDialog()
+                    }
+                }
+        }
+    }
+
+    private fun reduceMaterial(qtyProduct: Long) {
+        for(index in model?.material?.indices!!) {
+            val materialId = model?.material!![index].uid
+            val newStock = model?.material!![index].stock!! - model?.material!![index].qty!!*qtyProduct
+            FirebaseFirestore
+                .getInstance()
+                .collection("material")
+                .document(materialId!!)
+                .update("stock", newStock)
+        }
+
+        Handler().postDelayed({
+            binding?.progressBar?.visibility = View.GONE
+            showSuccessDialog()
+        }, 3000)
+
     }
 
     private fun initRecyclerView() {
         binding?.rvMaterial?.layoutManager = LinearLayoutManager(this)
-        adapter = FormulatedMaterialAdapter("detail",model?.material)
+        adapter = FormulatedMaterialAdapter("detail", model?.material)
         binding?.rvMaterial?.adapter = adapter
     }
 
@@ -86,7 +166,7 @@ class FormulatedDetailActivity : AppCompatActivity() {
         confirmBtn?.setOnClickListener {
             val stock = stockEt.text.toString().trim()
 
-            if(stock.isEmpty() || stock.toLong() <= 0) {
+            if (stock.isEmpty() || stock.toLong() <= 0) {
                 Toast.makeText(this, "Maaf, stok minimal 1", Toast.LENGTH_SHORT).show()
             } else {
                 pb.visibility = View.VISIBLE
@@ -95,15 +175,20 @@ class FormulatedDetailActivity : AppCompatActivity() {
                         .getInstance()
                         .collection("formulated")
                         .document(model?.uid!!)
-                        .update("stock", currentStock+stock.toLong())
+                        .update("stock", currentStock + stock.toLong())
                         .addOnCompleteListener {
-                            if(it.isSuccessful) {
+                            if (it.isSuccessful) {
                                 dialog.dismiss()
-                                binding?.stock?.setText("${currentStock+stock.toLong()}")
-                                Toast.makeText(this, "Sukses mengupdate stok", Toast.LENGTH_SHORT).show()
+                                binding?.stock?.setText("${currentStock + stock.toLong()}")
+                                Toast.makeText(this, "Sukses mengupdate stok", Toast.LENGTH_SHORT)
+                                    .show()
                             } else {
                                 dialog.dismiss()
-                                Toast.makeText(this, "Gagal mengupdate stok, silahkan periksa koneksi internet anda dan coba lagi nanti", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this,
+                                    "Gagal mengupdate stok, silahkan periksa koneksi internet anda dan coba lagi nanti",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                 }
@@ -134,11 +219,15 @@ class FormulatedDetailActivity : AppCompatActivity() {
             .document(model?.uid!!)
             .delete()
             .addOnCompleteListener {
-                if(it.isSuccessful) {
+                if (it.isSuccessful) {
                     Toast.makeText(this, "Sukses menghapus obat", Toast.LENGTH_SHORT).show()
                     onBackPressed()
                 } else {
-                    Toast.makeText(this, "Gagal menghapus obat, terdapat kendala koneksi internet", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "Gagal menghapus obat, terdapat kendala koneksi internet",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
     }
@@ -152,13 +241,38 @@ class FormulatedDetailActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener {
                 val role = "" + it.data!!["role"]
-                if(role == "admin" || role == "sales") {
+                name = "" + it.data!!["name"]
+                userId = "" + it.data!!["uid"]
+                if (role == "admin" || role == "sales") {
                     binding?.edit?.visibility = View.VISIBLE
                     binding?.delete?.visibility = View.VISIBLE
                 }
             }
     }
 
+
+    private fun showFailureDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Gagal Menambahkan Ke Daftar Purchase Order")
+            .setMessage("Ups, koneksi internet anda bermasalah, silahkan coba lagi nanti")
+            .setIcon(R.drawable.ic_baseline_clear_24)
+            .setPositiveButton("OK") { dialogInterface, _ ->
+                dialogInterface.dismiss()
+            }
+            .show()
+    }
+
+    private fun showSuccessDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Sukses Menambahkan Ke Daftar Purchase Order")
+            .setMessage("Silahkan cek menu PO untuk melakukan purchase order")
+            .setIcon(R.drawable.ic_baseline_check_circle_outline_24)
+            .setPositiveButton("OK") { dialogInterface, _ ->
+                dialogInterface.dismiss()
+                onBackPressed()
+            }
+            .show()
+    }
 
     override fun onDestroy() {
         super.onDestroy()

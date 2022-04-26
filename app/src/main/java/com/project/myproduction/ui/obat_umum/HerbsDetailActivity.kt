@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
@@ -19,11 +20,15 @@ import com.project.myproduction.R
 import com.project.myproduction.databinding.ActivityHerbsDetailBinding
 import com.project.myproduction.ui.obat_racikan.material.MaterialAddEditActivity
 import java.text.DecimalFormat
+import java.util.*
 
 class HerbsDetailActivity : AppCompatActivity() {
 
     private var binding: ActivityHerbsDetailBinding? = null
     private var model : HerbsModel? = null
+    private var name: String? = null
+    private var userId: String? = null
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +64,78 @@ class HerbsDetailActivity : AppCompatActivity() {
         binding?.addStock?.setOnClickListener {
             addStock()
         }
+
+        binding?.addProductBtn?.setOnClickListener {
+            formValidation()
+        }
+    }
+
+    private fun formValidation() {
+        val qtyProduct = binding?.qtyProduct?.text.toString().trim()
+
+        if(qtyProduct.isEmpty() || qtyProduct.toInt() <= 0) {
+            Toast.makeText(this, "Minimal pemesanan 1 produk", Toast.LENGTH_SHORT).show()
+        } else {
+            binding?.progressBar?.visibility = View.VISIBLE
+
+            if(model?.stock!! < qtyProduct.toLong()) {
+                Toast.makeText(
+                    this,
+                    "stok obat ${model?.name} tidak mencukupi",
+                    Toast.LENGTH_SHORT
+                ).show()
+                binding?.progressBar?.visibility = View.GONE
+                return
+            }
+
+            val uid = System.currentTimeMillis().toString()
+
+            val data = mapOf(
+                "uid" to uid,
+                "name" to model?.name,
+                "nameTemp" to model?.name?.lowercase(Locale.getDefault()),
+                "code" to model?.code,
+                "type" to model?.type,
+                "price" to model?.price!! * qtyProduct.toLong(),
+                "qty" to qtyProduct.toLong(),
+                "salesName" to name,
+                "salesId" to userId,
+                "productId" to model?.uid,
+                "productStock" to model?.stock,
+                "category" to "common"
+            )
+
+            FirebaseFirestore
+                .getInstance()
+                .collection("purchase_order")
+                .document(uid)
+                .set(data)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        binding?.progressBar?.visibility = View.GONE
+                        showSuccessDialog()
+                    } else {
+                        binding?.progressBar?.visibility = View.GONE
+                        showFailureDialog()
+                    }
+                }
+        }
+    }
+
+    private fun reduceStock(qtyProduct: Long) {
+        val newStock = model?.stock!! - qtyProduct
+        FirebaseFirestore
+            .getInstance()
+            .collection("common_herbs")
+            .document(model?.uid!!)
+            .update("stock", newStock)
+
+        Handler().postDelayed({
+            binding?.progressBar?.visibility = View.GONE
+            showSuccessDialog()
+        }, 3000)
+
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -142,11 +219,36 @@ class HerbsDetailActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener {
                 val role = "" + it.data!!["role"]
+                name = "" + it.data!!["name"]
+                userId = "" + it.data!!["uid"]
                 if(role == "admin" || role == "sales") {
                     binding?.edit?.visibility = View.VISIBLE
                     binding?.delete?.visibility = View.VISIBLE
                 }
             }
+    }
+
+    private fun showFailureDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Gagal Menambahkan Ke Daftar Purchase Order")
+            .setMessage("Ups, koneksi internet anda bermasalah, silahkan coba lagi nanti")
+            .setIcon(R.drawable.ic_baseline_clear_24)
+            .setPositiveButton("OK") { dialogInterface, _ ->
+                dialogInterface.dismiss()
+            }
+            .show()
+    }
+
+    private fun showSuccessDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Sukses Menambahkan Ke Daftar Purchase Order")
+            .setMessage("Silahkan cek menu PO untuk melakukan purchase order")
+            .setIcon(R.drawable.ic_baseline_check_circle_outline_24)
+            .setPositiveButton("OK") { dialogInterface, _ ->
+                dialogInterface.dismiss()
+                onBackPressed()
+            }
+            .show()
     }
 
     override fun onDestroy() {

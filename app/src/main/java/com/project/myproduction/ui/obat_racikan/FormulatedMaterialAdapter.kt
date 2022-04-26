@@ -1,9 +1,12 @@
 package com.project.myproduction.ui.obat_racikan
 
 import android.annotation.SuppressLint
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.project.myproduction.databinding.ItemMaterialBinding
 import com.project.myproduction.ui.obat_racikan.material.MaterialModel
@@ -24,16 +27,41 @@ class FormulatedMaterialAdapter(
                 code.text = "Kode: ${model.code}"
                 type.text = "Jenis: ${model.type}"
 
-                if (option == "add") {
-                    delete.visibility = View.VISIBLE
-                    qtyEt.isEnabled = true
-                    val qty = qty.text.toString().trim()
-                    materialList?.get(adapterPosition)!!.qty = qty.toLong()
-                } else if (option == "edit") {
-                    delete.visibility = View.VISIBLE
-                    qty.setText(model.qty.toString())
-                }
+                when (option) {
+                    "add" -> {
+                        delete.visibility = View.VISIBLE
+                        qtyEt.isEnabled = true
+                        qty.addTextChangedListener(object: TextWatcher{
+                            override fun beforeTextChanged(
+                                p0: CharSequence?,
+                                p1: Int,
+                                p2: Int,
+                                p3: Int
+                            ) {
 
+                            }
+
+                            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                            }
+
+                            override fun afterTextChanged(query: Editable?) {
+                                if(query.toString().isEmpty()) {
+                                    Toast.makeText(itemView.context, "Kuantitas bahan baku ke ${adapterPosition+1} tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    materialList!![adapterPosition].qty = query.toString().toLong()
+                                }
+                            }
+                        })
+                    }
+                    "edit" -> {
+                        delete.visibility = View.VISIBLE
+                        qty.setText(model.qty.toString())
+                    }
+                    "detail" -> {
+                        qty.setText(model.qty.toString())
+                    }
+                }
                 delete.setOnClickListener {
                     materialList?.removeAt(adapterPosition)
                     notifyDataSetChanged()

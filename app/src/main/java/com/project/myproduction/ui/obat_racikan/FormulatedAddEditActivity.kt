@@ -70,12 +70,14 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
                     val code = material.code
                     val type = material.type
                     val uid = material.uid
+                    val stock = material.stock
 
                     val model = MaterialModel()
                     model.name = name
                     model.uid = uid
                     model.code = code
                     model.type = type
+                    model.stock = stock
 
                     listOfMaterial.add(model)
 
@@ -127,6 +129,7 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
                     for(idx in listOfMaterial.indices) {
                         if(listOfMaterial[idx].qty == 0L) {
                             Toast.makeText(this, "Kuantitas bahan baku minimal 1", Toast.LENGTH_SHORT).show()
+                            binding?.progressBar?.visibility = View.GONE
                             return
                         }
                     }
@@ -161,6 +164,7 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
                     for(idx in listOfMaterial.indices) {
                         if(listOfMaterial[idx].qty == 0L) {
                             Toast.makeText(this, "Kuantitas bahan baku minimal 1", Toast.LENGTH_SHORT).show()
+                            binding?.progressBar?.visibility = View.GONE
                             return
                         }
                     }

@@ -19,14 +19,18 @@
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_material.xml" value="0.19410004275331338" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_material_add.xml" value="0.2" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_material_detail.xml" value="0.19410004275331338" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_poactivity.xml" value="0.19410004275331338" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_register.xml" value="0.23645833333333333" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_settings.xml" value="0.23645833333333333" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_single_herbs.xml" value="0.2" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/fragment_formulated.xml" value="0.19410004275331338" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/fragment_herb.xml" value="0.19410004275331338" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_filter.xml" value="0.2" />
-        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_herbs.xml" value="0.4" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_herbs.xml" value="0.264" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_material.xml" value="0.264" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_sales.xml" value="0.264" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/popup_add_stock.xml" value="0.2" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/popup_purchase_order.xml" value="0.264" />
       </map>
     </option>
   </component>

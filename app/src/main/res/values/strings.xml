@@ -1,10 +1,12 @@
 <resources>
-    <string name="app_name">Primax</string>
+    <string name="app_name">Sales</string>
     <string name="image">image</string>
 
     <string-array name="status">
         <item>Aktif</item>
         <item>Blokir</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
