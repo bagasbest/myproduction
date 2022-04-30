@@ -3,15 +3,16 @@ package com.project.myproduction.ui.settings
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.project.myproduction.R
 import com.project.myproduction.auth.LoginActivity
 import com.project.myproduction.auth.RegisterActivity
 import com.project.myproduction.databinding.ActivitySettingsBinding
+import com.project.myproduction.ui.settings.cusotomer_data.CustomerDataActivity
 import com.project.myproduction.ui.settings.managing_sales.ManagingSalesActivity
 
 class SettingsActivity : AppCompatActivity() {
@@ -43,6 +44,18 @@ class SettingsActivity : AppCompatActivity() {
 
         binding?.signOut?.setOnClickListener {
             showConfirmLogout()
+        }
+
+        binding?.share?.setOnClickListener {
+            val sendIntent = Intent()
+            sendIntent.action = Intent.ACTION_SEND
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Berikut merupakan aplikasi SALES: ")
+            sendIntent.type = "text/plain"
+            startActivity(sendIntent)
+        }
+
+        binding?.customerData?.setOnClickListener {
+            startActivity(Intent(this, CustomerDataActivity::class.java))
         }
     }
 

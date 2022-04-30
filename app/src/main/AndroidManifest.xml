@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyProduction">
         <activity
+            android:name=".ui.purchase_order.order.OrderDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.purchase_order.order.OrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.settings.cusotomer_data.CustomerDataActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.purchase_order.PODetailActivity"
             android:exported="false" />
         <activity

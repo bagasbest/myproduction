@@ -21,6 +21,7 @@ import com.project.myproduction.databinding.ActivityHerbsDetailBinding
 import com.project.myproduction.ui.obat_racikan.material.MaterialAddEditActivity
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class HerbsDetailActivity : AppCompatActivity() {
 
@@ -76,6 +77,7 @@ class HerbsDetailActivity : AppCompatActivity() {
         if(qtyProduct.isEmpty() || qtyProduct.toInt() <= 0) {
             Toast.makeText(this, "Minimal pemesanan 1 produk", Toast.LENGTH_SHORT).show()
         } else {
+            val materialList = ArrayList<String>()
             binding?.progressBar?.visibility = View.VISIBLE
 
             if(model?.stock!! < qtyProduct.toLong()) {
@@ -101,6 +103,7 @@ class HerbsDetailActivity : AppCompatActivity() {
                 "salesName" to name,
                 "salesId" to userId,
                 "productId" to model?.uid,
+                "materialId" to materialList,
                 "productStock" to model?.stock,
                 "category" to "common"
             )

@@ -46,7 +46,6 @@ class FormulatedDetailActivity : AppCompatActivity() {
         binding?.code?.setText(model?.code)
         binding?.type?.setText(model?.type)
         binding?.price?.setText("Rp.${formatter.format(model?.price)}")
-        binding?.stock?.setText(model?.stock.toString())
         initRecyclerView()
 
         binding?.settingBtn?.setOnClickListener {
@@ -64,9 +63,6 @@ class FormulatedDetailActivity : AppCompatActivity() {
             showConfirmDelete()
         }
 
-        binding?.addStock?.setOnClickListener {
-            addStock()
-        }
         binding?.addProductBtn?.setOnClickListener {
             formValidation()
         }
@@ -77,8 +73,10 @@ class FormulatedDetailActivity : AppCompatActivity() {
         if (qtyProduct.isEmpty() || qtyProduct.toInt() <= 0) {
             Toast.makeText(this, "Minimal pemesanan 1 produk", Toast.LENGTH_SHORT).show()
         } else {
+            val materialList = ArrayList<String>()
             binding?.progressBar?.visibility = View.VISIBLE
             for (index in model?.material?.indices!!) {
+                materialList.add(model?.material!![index].uid!!)
                 if (model?.material!![index].stock!! < model?.material!![index].qty?.times(
                         qtyProduct.toLong()
                     )!!
@@ -106,6 +104,7 @@ class FormulatedDetailActivity : AppCompatActivity() {
                 "salesName" to name,
                 "salesId" to userId,
                 "productId" to model?.uid,
+                "materialId" to materialList,
                 "productStock" to model?.stock,
                 "category" to "formulated"
             )
@@ -179,7 +178,6 @@ class FormulatedDetailActivity : AppCompatActivity() {
                         .addOnCompleteListener {
                             if (it.isSuccessful) {
                                 dialog.dismiss()
-                                binding?.stock?.setText("${currentStock + stock.toLong()}")
                                 Toast.makeText(this, "Sukses mengupdate stok", Toast.LENGTH_SHORT)
                                     .show()
                             } else {

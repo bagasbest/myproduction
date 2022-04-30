@@ -60,7 +60,6 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:hint="Kuantitas"
-                android:text="1"
                 android:inputType="number" />
 
         </com.google.android.material.textfield.TextInputLayout>

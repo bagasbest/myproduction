@@ -6,28 +6,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.purchase_order.option.FormulatedFragment">
 
-    <ImageButton
-        android:id="@+id/printBtn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_rounded_btn"
-        android:backgroundTint="@color/green"
-        android:src="@drawable/ic_baseline_print_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvOrderProcess"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/poBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/printBtn"
+        app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_herbs" />
 
     <LinearLayout
@@ -57,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:textAlignment="center"
-            android:text="Daftar obat umum yang akan di PO akan tampil di sini"
+            android:text="Daftar obat racikan yang akan di PO akan tampil di sini"
             android:textColor="@color/black" />
 
 
@@ -81,7 +69,8 @@
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Purchase Order (PO)"
+        android:enabled="false"
+        android:text="KONFIRMASI Purchase Order (PO)"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

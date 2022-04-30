@@ -147,45 +147,13 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout4"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:enabled="false"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/stock"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Stok"
-                        android:inputType="number"
-                        android:textColor="@color/black" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <Button
-                    android:id="@+id/addStock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="+ Stok"
-                    app:layout_constraintBottom_toBottomOf="@+id/textInputLayout4"
-                    app:layout_constraintEnd_toEndOf="@+id/textInputLayout4"
-                    app:layout_constraintTop_toTopOf="@+id/textInputLayout4" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Komposisi"
+                android:layout_marginTop="16sp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvMaterial"

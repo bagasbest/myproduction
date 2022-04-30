@@ -34,6 +34,7 @@ class POViewModel : ViewModel() {
                         model.salesName = document.data["salesName"].toString()
                         model.salesId = document.data["salesId"].toString()
                         model.productId = document.data["productId"].toString()
+                        model.materialId = document.data["materialId"] as ArrayList<String>
                         model.category = document.data["category"].toString()
                         model.productStock = document.data["productStock"] as Long
 
@@ -70,6 +71,7 @@ class POViewModel : ViewModel() {
                         model.salesName = document.data["salesName"].toString()
                         model.salesId = document.data["salesId"].toString()
                         model.productId = document.data["productId"].toString()
+                        model.materialId = document.data["materialId"] as ArrayList<String>
                         model.category = document.data["category"].toString()
                         model.productStock = document.data["productStock"] as Long
 

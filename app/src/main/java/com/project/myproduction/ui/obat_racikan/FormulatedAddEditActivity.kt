@@ -48,7 +48,6 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
             binding?.code?.setText(model?.code)
             binding?.type?.setText(model?.type)
             binding?.price?.setText(model?.price.toString())
-            binding?.stock?.setText(model?.stock.toString())
             listOfMaterial.addAll(model?.material!!)
             initRecyclerView("edit")
         }
@@ -95,7 +94,6 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
         val code = binding?.code?.text.toString().trim()
         val type = binding?.type?.text.toString().trim()
         val price = binding?.price?.text.toString().trim()
-        val stock = binding?.stock?.text.toString().trim()
 
         when {
             name.isEmpty() -> {
@@ -109,13 +107,6 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
             }
             price.isEmpty() -> {
                 Toast.makeText(this, "Harga Obat tidak boleh kosong", Toast.LENGTH_SHORT).show()
-            }
-            stock.isEmpty() || stock.toInt() <= 0 -> {
-                Toast.makeText(
-                    this,
-                    "Stok Obat tidak boleh kosong, minimal 1 stok",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
             listOfMaterial.size == 0 -> {
                 Toast.makeText(this, "Komposisi racikan tidak boleh kosong, minimal 1 bahan baku di pilih", Toast.LENGTH_SHORT).show()
@@ -141,7 +132,6 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
                         "code" to code,
                         "type" to type,
                         "price" to price.toLong(),
-                        "stock" to stock.toLong(),
                         "material" to listOfMaterial
                     )
 
@@ -175,7 +165,6 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
                         "code" to code,
                         "type" to type,
                         "price" to price.toLong(),
-                        "stock" to stock.toLong(),
                         "material" to listOfMaterial
                     )
 

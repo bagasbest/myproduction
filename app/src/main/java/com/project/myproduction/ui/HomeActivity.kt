@@ -15,6 +15,7 @@ import com.project.myproduction.databinding.ActivityHomeBinding
 import com.project.myproduction.ui.obat_racikan.FormulatedActivity
 import com.project.myproduction.ui.obat_umum.SingleHerbsActivity
 import com.project.myproduction.ui.purchase_order.POActivity
+import com.project.myproduction.ui.purchase_order.PODetailActivity
 import com.project.myproduction.ui.settings.SettingsActivity
 
 class HomeActivity : AppCompatActivity() {
@@ -51,7 +52,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         binding?.purchaseOrder?.setOnClickListener {
-            startActivity(Intent(this, POActivity::class.java))
+            startActivity(Intent(this, PODetailActivity::class.java))
         }
 
     }

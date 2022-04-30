@@ -47,9 +47,11 @@ class FormulatedFragment : Fragment() {
     private fun showPopupPO() {
         val receiverName: TextInputEditText
         val receiverAddress: TextInputEditText
+        val receiverPhone: TextInputEditText
         val sendAnotherCb: CheckBox
         val receiverName2nd: TextInputEditText
         val receiverAddress2nd: TextInputEditText
+        val receiverPhone2nd: TextInputEditText
         val confirmBtn: Button
         val address2nd: LinearLayout
         val pb: ProgressBar
@@ -59,13 +61,15 @@ class FormulatedFragment : Fragment() {
         pb = dialog.findViewById(R.id.progressBar)
         receiverName = dialog.findViewById(R.id.receiverName)
         receiverAddress = dialog.findViewById(R.id.receiverAddress)
+        receiverPhone = dialog.findViewById(R.id.phone)
         receiverName2nd = dialog.findViewById(R.id.receiverName2nd)
         receiverAddress2nd = dialog.findViewById(R.id.receiverAddress2nd)
+        receiverPhone2nd = dialog.findViewById(R.id.phone2nd)
         sendAnotherCb = dialog.findViewById(R.id.sendToAnotherCb)
         address2nd = dialog.findViewById(R.id.address2nd)
 
         sendAnotherCb.setOnClickListener {
-            if(sendAnotherCb.isChecked) {
+            if (sendAnotherCb.isChecked) {
                 address2nd.visibility = View.VISIBLE
             } else {
                 address2nd.visibility = View.GONE
@@ -75,17 +79,40 @@ class FormulatedFragment : Fragment() {
         confirmBtn?.setOnClickListener {
             val name = receiverName.text.toString().trim()
             val address = receiverAddress.text.toString().trim()
+            val phone = receiverPhone.text.toString().trim()
             val name2nd = receiverName2nd.text.toString().trim()
             val recAddress2nd = receiverAddress2nd.text.toString().trim()
+            val phone2nd = receiverPhone2nd.text.toString().trim()
 
-            if(name.isEmpty()) {
+            if (name.isEmpty()) {
                 Toast.makeText(activity, "Maaf, Nama tidak boleh kosong", Toast.LENGTH_SHORT).show()
             } else if (address.isEmpty()) {
-                Toast.makeText(activity, "Maaf, Alamat tidak boleh kosong", Toast.LENGTH_SHORT).show()
-            } else if(sendAnotherCb.isChecked && name2nd.isEmpty()) {
-                Toast.makeText(activity, "Maaf, Nama penerima lain tidak boleh kosong", Toast.LENGTH_SHORT).show()
-            } else if(sendAnotherCb.isChecked && recAddress2nd.isEmpty()) {
-                Toast.makeText(activity, "Maaf, Alamat penerima lain tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Maaf, Alamat tidak boleh kosong", Toast.LENGTH_SHORT)
+                    .show()
+            } else if (phone.isEmpty()) {
+                Toast.makeText(
+                    activity,
+                    "Maaf, No.Handphone tidak boleh kosong",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (sendAnotherCb.isChecked && name2nd.isEmpty()) {
+                Toast.makeText(
+                    activity,
+                    "Maaf, Nama penerima lain tidak boleh kosong",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (sendAnotherCb.isChecked && recAddress2nd.isEmpty()) {
+                Toast.makeText(
+                    activity,
+                    "Maaf, Alamat penerima lain tidak boleh kosong",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (sendAnotherCb.isChecked && phone2nd.isEmpty()) {
+                Toast.makeText(
+                    activity,
+                    "Maaf, No.Handphone penerima tidak boleh kosong",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 dialog.dismiss()
             }
@@ -97,7 +124,7 @@ class FormulatedFragment : Fragment() {
 
     private fun initRecyclerView() {
         binding?.rvOrderProcess?.layoutManager = LinearLayoutManager(activity)
-        adapter = POAdapter()
+        adapter = POAdapter(binding?.poBtn)
         binding?.rvOrderProcess?.adapter = adapter
     }
 
@@ -111,6 +138,7 @@ class FormulatedFragment : Fragment() {
             if (productList.size > 0) {
                 adapter?.setData(productList)
                 binding?.noData?.visibility = View.GONE
+                binding?.poBtn?.isEnabled = true
             } else {
                 binding?.noData?.visibility = View.VISIBLE
             }
