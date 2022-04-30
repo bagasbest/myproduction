@@ -13,6 +13,8 @@
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_herbs_add_edit.xml" value="0.176" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_herbs_detail.xml" value="0.2" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_home.xml" value="0.23645833333333333" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_invoice.xml" value="0.19410004275331338" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_invoice_detail.xml" value="0.19410004275331338" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_login.xml" value="0.23645833333333333" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_main.xml" value="0.23645833333333333" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_managing_sales.xml" value="0.2" />
@@ -31,6 +33,7 @@
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/fragment_herb.xml" value="0.19410004275331338" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_filter.xml" value="0.2" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_herbs.xml" value="0.264" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_invoice.xml" value="0.4" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_material.xml" value="0.264" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_order.xml" value="0.264" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_po.xml" value="0.19410004275331338" />

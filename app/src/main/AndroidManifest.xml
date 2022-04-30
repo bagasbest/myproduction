@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyProduction">
         <activity
+            android:name=".ui.invoice.InvoiceDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.invoice.InvoiceActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.purchase_order.order.OrderDetailActivity"
             android:exported="false" />
         <activity

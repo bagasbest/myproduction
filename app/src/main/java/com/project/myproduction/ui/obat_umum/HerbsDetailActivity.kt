@@ -89,6 +89,7 @@ class HerbsDetailActivity : AppCompatActivity() {
                 binding?.progressBar?.visibility = View.GONE
                 return
             }
+            materialList.add(model?.uid!!)
 
             val uid = System.currentTimeMillis().toString()
 
