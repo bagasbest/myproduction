@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.project.myproduction.R
 import com.project.myproduction.auth.LoginActivity
 import com.project.myproduction.databinding.ActivityHomeBinding
+import com.project.myproduction.ui.invoice.InvoiceActivity
 import com.project.myproduction.ui.obat_racikan.FormulatedActivity
 import com.project.myproduction.ui.obat_umum.SingleHerbsActivity
 import com.project.myproduction.ui.purchase_order.POActivity
@@ -53,6 +54,10 @@ class HomeActivity : AppCompatActivity() {
 
         binding?.purchaseOrder?.setOnClickListener {
             startActivity(Intent(this, PODetailActivity::class.java))
+        }
+
+        binding?.invoice?.setOnClickListener {
+            startActivity(Intent(this, InvoiceActivity::class.java))
         }
 
     }

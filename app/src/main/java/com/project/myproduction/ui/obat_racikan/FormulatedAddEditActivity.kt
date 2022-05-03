@@ -69,14 +69,12 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
                     val code = material.code
                     val type = material.type
                     val uid = material.uid
-                    val stock = material.stock
 
                     val model = MaterialModel()
                     model.name = name
                     model.uid = uid
                     model.code = code
                     model.type = type
-                    model.stock = stock
 
                     listOfMaterial.add(model)
 

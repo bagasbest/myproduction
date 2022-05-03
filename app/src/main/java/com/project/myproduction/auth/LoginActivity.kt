@@ -42,6 +42,7 @@ class LoginActivity : AppCompatActivity() {
         if(FirebaseAuth.getInstance().currentUser != null) {
             if(status != "Block") {
                 startActivity(Intent(this, HomeActivity::class.java))
+                finish()
             } else {
                 showBlockAlert()
             }

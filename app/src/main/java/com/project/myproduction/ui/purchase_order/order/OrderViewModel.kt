@@ -21,7 +21,6 @@ class OrderViewModel : ViewModel() {
 
         try {
             FirebaseFirestore.getInstance().collection("order")
-                .orderBy("status", Query.Direction.ASCENDING)
                 .get()
                 .addOnSuccessListener { documents ->
                     for (document in documents) {
@@ -32,11 +31,12 @@ class OrderViewModel : ViewModel() {
                         model.customer2ndName = document.data["customer2ndName"].toString()
                         model.customer2ndPhone = document.data["customer2ndPhone"].toString()
                         model.totalPrice = document.data["totalPrice"] as Long
+                        model.dateInMillis = document.data["dateInMillis"] as Long
                         model.customerPhone = document.data["customerPhone"].toString()
                         model.salesName = document.data["salesName"].toString()
                         model.customerAddress = document.data["customerAddress"].toString()
                         model.customerName = document.data["customerName"].toString()
-                        model.status = document.data["status"].toString()
+                        model.date = document.data["date"].toString()
                         model.product = document.toObject(OrderModel::class.java).product
 
                         listData.add(model)

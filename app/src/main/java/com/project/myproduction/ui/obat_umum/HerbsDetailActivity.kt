@@ -116,8 +116,7 @@ class HerbsDetailActivity : AppCompatActivity() {
                 .set(data)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        binding?.progressBar?.visibility = View.GONE
-                        showSuccessDialog()
+                        reduceStock(qtyProduct.toLong())
                     } else {
                         binding?.progressBar?.visibility = View.GONE
                         showFailureDialog()

@@ -1,26 +1,22 @@
 package com.project.myproduction.ui.obat_racikan
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.project.myproduction.R
 import com.project.myproduction.databinding.ActivityFormulatedDetailBinding
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class FormulatedDetailActivity : AppCompatActivity() {
 
@@ -29,6 +25,7 @@ class FormulatedDetailActivity : AppCompatActivity() {
     private var adapter: FormulatedMaterialAdapter? = null
     private var name: String? = null
     private var userId: String? = null
+    private val formulatedQtyList = ArrayList<Long>()
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,127 +71,102 @@ class FormulatedDetailActivity : AppCompatActivity() {
             Toast.makeText(this, "Minimal pemesanan 1 produk", Toast.LENGTH_SHORT).show()
         } else {
             val materialList = ArrayList<String>()
+            var stockCounter = 0
+            materialList.clear()
+            formulatedQtyList.clear()
+
             binding?.progressBar?.visibility = View.VISIBLE
             for (index in model?.material?.indices!!) {
                 materialList.add(model?.material!![index].uid!!)
-                if (model?.material!![index].stock!! < model?.material!![index].qty?.times(
-                        qtyProduct.toLong()
-                    )!!
-                ) {
-                    Toast.makeText(
-                        this,
-                        "stok bahan baku ${model?.material!![index].name} tidak mencukupi",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    binding?.progressBar?.visibility = View.GONE
-                    return
-                }
+                formulatedQtyList.add(model?.material!![index].qty!!)
+                FirebaseFirestore
+                    .getInstance()
+                    .collection("material")
+                    .document(model?.material!![index].uid!!)
+                    .get()
+                    .addOnSuccessListener {
+                        val currentStock = it.data!!["stock"] as Long
+
+                        if (currentStock < model?.material!![index].qty?.times(qtyProduct.toLong())!!) {
+                            Toast.makeText(
+                                this,
+                                "stok bahan baku ${model?.material!![index].name} tidak mencukupi",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            binding?.progressBar?.visibility = View.GONE
+                            stockCounter++
+                        }
+                    }
             }
 
-            val uid = System.currentTimeMillis().toString()
+            Handler().postDelayed({
+                if (stockCounter == 0) {
+                    val uid = System.currentTimeMillis().toString()
 
-            val data = mapOf(
-                "uid" to uid,
-                "name" to model?.name,
-                "nameTemp" to model?.name?.lowercase(Locale.getDefault()),
-                "code" to model?.code,
-                "type" to model?.type,
-                "price" to model?.price!! * qtyProduct.toLong(),
-                "qty" to qtyProduct.toLong(),
-                "salesName" to name,
-                "salesId" to userId,
-                "productId" to model?.uid,
-                "materialId" to materialList,
-                "productStock" to model?.stock,
-                "category" to "formulated"
-            )
+                    val data = mapOf(
+                        "uid" to uid,
+                        "name" to model?.name,
+                        "nameTemp" to model?.name?.lowercase(Locale.getDefault()),
+                        "code" to model?.code,
+                        "type" to model?.type,
+                        "price" to model?.price!! * qtyProduct.toLong(),
+                        "qty" to qtyProduct.toLong(),
+                        "salesName" to name,
+                        "salesId" to userId,
+                        "productId" to model?.uid,
+                        "materialId" to materialList,
+                        "formulatedQty" to formulatedQtyList,
+                        "category" to "formulated"
+                    )
 
-            FirebaseFirestore
-                .getInstance()
-                .collection("purchase_order")
-                .document(uid)
-                .set(data)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        binding?.progressBar?.visibility = View.GONE
-                        showSuccessDialog()
-                    } else {
-                        binding?.progressBar?.visibility = View.GONE
-                        showFailureDialog()
-                    }
+                    FirebaseFirestore
+                        .getInstance()
+                        .collection("purchase_order")
+                        .document(uid)
+                        .set(data)
+                        .addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                /// potong stok
+                                cutStock(qtyProduct.toLong())
+                            } else {
+                                binding?.progressBar?.visibility = View.GONE
+                                showFailureDialog()
+                            }
+                        }
                 }
+            }, 1000)
         }
     }
 
-    private fun reduceMaterial(qtyProduct: Long) {
-        for(index in model?.material?.indices!!) {
-            val materialId = model?.material!![index].uid
-            val newStock = model?.material!![index].stock!! - model?.material!![index].qty!!*qtyProduct
+    private fun cutStock(qty: Long) {
+        for (index in model?.material?.indices!!) {
             FirebaseFirestore
                 .getInstance()
                 .collection("material")
-                .document(materialId!!)
-                .update("stock", newStock)
+                .document(model?.material!![index].uid!!)
+                .get()
+                .addOnSuccessListener {
+                    val currentStock = it.data!!["stock"] as Long
+                    val newStock = formulatedQtyList[index].times(qty)
+                    val result = currentStock - newStock
+                    FirebaseFirestore
+                        .getInstance()
+                        .collection("material")
+                        .document(model?.material!![index].uid!!)
+                        .update("stock", result)
+                }
         }
 
         Handler().postDelayed({
             binding?.progressBar?.visibility = View.GONE
             showSuccessDialog()
         }, 3000)
-
     }
 
     private fun initRecyclerView() {
         binding?.rvMaterial?.layoutManager = LinearLayoutManager(this)
         adapter = FormulatedMaterialAdapter("detail", model?.material)
         binding?.rvMaterial?.adapter = adapter
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun addStock() {
-        val currentStock = model?.stock
-        val stockEt: TextInputEditText
-        val confirmBtn: Button
-        val pb: ProgressBar
-        val dialog = Dialog(this)
-        dialog.setContentView(R.layout.popup_add_stock)
-        stockEt = dialog.findViewById(R.id.stock)
-        confirmBtn = dialog.findViewById(R.id.confirmBtn)
-        pb = dialog.findViewById(R.id.progressBar)
-
-        confirmBtn?.setOnClickListener {
-            val stock = stockEt.text.toString().trim()
-
-            if (stock.isEmpty() || stock.toLong() <= 0) {
-                Toast.makeText(this, "Maaf, stok minimal 1", Toast.LENGTH_SHORT).show()
-            } else {
-                pb.visibility = View.VISIBLE
-                if (currentStock != null) {
-                    FirebaseFirestore
-                        .getInstance()
-                        .collection("formulated")
-                        .document(model?.uid!!)
-                        .update("stock", currentStock + stock.toLong())
-                        .addOnCompleteListener {
-                            if (it.isSuccessful) {
-                                dialog.dismiss()
-                                Toast.makeText(this, "Sukses mengupdate stok", Toast.LENGTH_SHORT)
-                                    .show()
-                            } else {
-                                dialog.dismiss()
-                                Toast.makeText(
-                                    this,
-                                    "Gagal mengupdate stok, silahkan periksa koneksi internet anda dan coba lagi nanti",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                }
-            }
-        }
-
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.show()
     }
 
     private fun showConfirmDelete() {

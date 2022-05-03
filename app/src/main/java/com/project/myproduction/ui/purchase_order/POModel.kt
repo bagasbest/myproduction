@@ -16,5 +16,5 @@ data class POModel(
     var productId: String? = null,
     var materialId: ArrayList<String>? = null,
     var category: String? = null,
-    var productStock: Long? = 0L,
+    var formulatedQty: ArrayList<Long>? = null,
 ) : Parcelable

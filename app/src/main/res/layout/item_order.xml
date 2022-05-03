@@ -56,29 +56,6 @@
             app:layout_constraintTop_toBottomOf="@+id/customerAddress" />
 
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_rounded_btn"
-            android:backgroundTint="@android:color/holo_red_dark"
-            android:orientation="vertical"
-            android:paddingHorizontal="10dp"
-            android:id="@+id/linear_layout"
-            android:paddingVertical="5dp"
-            app:layout_constraintBottom_toBottomOf="@+id/totalPrice"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/totalPrice">
-
-            <TextView
-                android:id="@+id/status"
-                android:layout_width="wrap_content"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:layout_height="wrap_content"
-                android:text="Belum Disetujui"
-                android:textColor="@color/white" />
-
-        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

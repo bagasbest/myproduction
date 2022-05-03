@@ -20,8 +20,6 @@ class OrderDetailActivity : AppCompatActivity() {
     private var binding: ActivityOrderDetailBinding? = null
     private var model: OrderModel? = null
     private var adapter: OrderPOAdapter? = null
-    private var date: String? = null
-    private var dateInMillis: Long = 0L
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,13 +33,8 @@ class OrderDetailActivity : AppCompatActivity() {
         binding?.customerName?.text = "Kepada Yth: ${model?.customerName}"
         binding?.customerPhone?.text = "No.Handphone: ${model?.customerPhone}"
         binding?.customerAddress?.text = "Alamat: ${model?.customerAddress}"
-        binding?.status?.text = "Status: ${model?.status}"
         binding?.salesName?.text = "Diajukan Oleh\n\n${model?.salesName}"
-        val calendar = Calendar.getInstance()
-        val sdf = SimpleDateFormat("dd-MMMM-yyyy, HH:mm", Locale.getDefault())
-        date = sdf.format(calendar.time)
-        dateInMillis = calendar.get(Calendar.MILLISECOND).toLong()
-        binding?.tanggal?.text = "Tanggal: $date"
+        binding?.tanggal?.text = "Tanggal: ${model?.date}"
 
         binding?.backButton?.setOnClickListener {
             onBackPressed()
@@ -51,153 +44,15 @@ class OrderDetailActivity : AppCompatActivity() {
 
         }
 
-        binding?.accBtn?.setOnClickListener {
-            showAlertAccDialog()
-        }
-
-        binding?.decline?.setOnClickListener {
+        binding?.delete?.setOnClickListener {
             showAlertDeclineDialog()
         }
-    }
-
-    private fun showAlertAccDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("Konfirmasi Meneima PO")
-            .setMessage("Apakah anda yakin ingin menerima PO yang telah di ajukan sales ?\n\nJika Ya, maka stok obat akan terpotong, dan invoice dati PO ini akan segera terbit, ingin melanjutkan ?")
-            .setIcon(R.drawable.ic_baseline_warning_24)
-            .setPositiveButton("YA") { dialogInterface, _ ->
-                dialogInterface.dismiss()
-                accPO()
-            }
-            .setNegativeButton("TIDAK", null)
-            .show()
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun accPO() {
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setMessage("Silahkan tunggu hingga proses selesai...")
-        progressDialog.setCancelable(false)
-        progressDialog.show()
-
-        // update status
-        FirebaseFirestore
-            .getInstance()
-            .collection("order")
-            .document(model?.uid!!)
-            .update("status", "Sudah Disetujui")
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    binding?.status?.text = "Sudah Disetujui"
-                    /// potong stok
-                    for (i in model?.product?.indices!!) {
-                        /// potong common product
-                        if (model?.product!![i].category == "common") {
-                            val materialId = model?.product!![i].materialId!![0]
-                            val qty = model?.product!![i].qty
-
-                            FirebaseFirestore
-                                .getInstance()
-                                .collection("common_herbs")
-                                .document(materialId)
-                                .get()
-                                .addOnSuccessListener { task ->
-                                    val stockProduct = task.data!!["stock"] as Long
-                                    if (stockProduct - qty!! >= 0) {
-
-                                        /// update new stock
-                                        FirebaseFirestore
-                                            .getInstance()
-                                            .collection("common_herbs")
-                                            .document(materialId)
-                                            .update("stock", stockProduct - qty)
-                                            .addOnCompleteListener { result ->
-                                                if (result.isSuccessful) {
-                                                    createInvoice(progressDialog)
-                                                } else {
-                                                    progressDialog.dismiss()
-                                                    showFailureDialog()
-                                                }
-                                            }
-
-                                    } else {
-                                        progressDialog.dismiss()
-                                        showFailureDialog()
-                                    }
-                                }
-                        } else {
-
-                        }
-                    }
-                } else {
-                    progressDialog.dismiss()
-                    showFailureDialog()
-                }
-            }
-    }
-
-    private fun createInvoice(progressDialog: ProgressDialog) {
-        /// buat invoice
-        val invoiceId =
-            System.currentTimeMillis().toString()
-        val invoice = mapOf(
-            "uid" to invoiceId,
-            "date" to date,
-            "dateInMillis" to dateInMillis,
-            "salesName" to model?.salesName,
-            "customerName" to model?.customerName,
-            "customerPhone" to model?.customerPhone,
-            "customerAddress" to model?.customerAddress,
-            "customer2ndName" to model?.customer2ndName,
-            "customer2ndPhone" to model?.customer2ndPhone,
-            "customer2ndAddress" to model?.customer2ndAddress,
-            "product" to model?.product,
-            "totalPrice" to model?.totalPrice,
-        )
-
-        FirebaseFirestore
-            .getInstance()
-            .collection("invoice")
-            .document(invoiceId)
-            .set(invoice)
-            .addOnCompleteListener { inv ->
-                if (inv.isSuccessful) {
-                    progressDialog.dismiss()
-                    showSuccessDialog()
-                } else {
-                    progressDialog.dismiss()
-                    showFailureDialog()
-                }
-            }
-    }
-
-    private fun showFailureDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("Gagal Menyetujui PO")
-            .setMessage("Ups, koneksi internet anda bermasalah, silahkan coba lagi nanti")
-            .setIcon(R.drawable.ic_baseline_clear_24)
-            .setPositiveButton("OK") { dialogInterface, _ ->
-                dialogInterface.dismiss()
-            }
-            .show()
-    }
-
-    private fun showSuccessDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("Sukses Menyetujui PO")
-            .setMessage("Stok obat telah di potong, invoice untuk PO ini sudah muncul, silahkan cek menu Invoice\n\nAnda juga bisa mencetak PO ini dan menyerahkan ke bagian obat untuk di persiapkan dan di packing.")
-            .setIcon(R.drawable.ic_baseline_check_circle_outline_24)
-            .setPositiveButton("OK") { dialogInterface, _ ->
-                dialogInterface.dismiss()
-                onBackPressed()
-            }
-            .show()
     }
 
     private fun showAlertDeclineDialog() {
         AlertDialog.Builder(this)
             .setTitle("Konfirmasi Menolak PO")
-            .setMessage("Apakah anda yakin ingin menolak PO yang telah di ajukan sales ?\n\nJika ditolak, otomatis PO ini akan segera di hapus, ingin melanjutkan ?")
+            .setMessage("Apakah anda yakin ingin menghapus PO ini ?")
             .setIcon(R.drawable.ic_baseline_warning_24)
             .setPositiveButton("YA") { dialogInterface, _ ->
                 dialogInterface.dismiss()
@@ -215,9 +70,9 @@ class OrderDetailActivity : AppCompatActivity() {
             .delete()
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Toast.makeText(this, "Berhasil menolak PO", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Berhasil menghapus PO", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this, "Gagal menolak PO", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Gagal menghapus PO, koneksi internet anda bermasalah, coba lagi nanti", Toast.LENGTH_SHORT).show()
                 }
             }
     }

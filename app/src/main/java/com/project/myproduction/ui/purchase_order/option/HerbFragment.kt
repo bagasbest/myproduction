@@ -19,14 +19,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.project.myproduction.R
 import com.project.myproduction.databinding.FragmentHerbBinding
-import com.project.myproduction.ui.obat_racikan.material.MaterialModel
-import com.project.myproduction.ui.obat_racikan.material.MaterialViewModel
 import com.project.myproduction.ui.purchase_order.POAdapter
 import com.project.myproduction.ui.purchase_order.POModel
 import com.project.myproduction.ui.purchase_order.POViewModel
 import com.project.myproduction.ui.settings.cusotomer_data.CustomerDataModel
 import com.project.myproduction.ui.settings.cusotomer_data.CustomerDataViewModel
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HerbFragment : Fragment() {
@@ -36,6 +37,8 @@ class HerbFragment : Fragment() {
     private var salesName: String? = null
     private var poList = ArrayList<POModel>()
     private var totalPrice: Long? = 0L
+    private var date: String? = null
+    private var dateInMillis: Long = 0L
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,16 +97,25 @@ class HerbFragment : Fragment() {
         viewModel.setListCustomerData()
         viewModel.getCustomerData().observe(viewLifecycleOwner) { customerData ->
             if (customerData.size > 0) {
-                   customerDataList.addAll(customerData)
+                customerDataList.addAll(customerData)
 
 
                 val propertyName = getCustomerNameList(customerDataList)
-                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_expandable_list_item_1, propertyName)
+                val adapter = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_expandable_list_item_1,
+                    propertyName
+                )
                 searchableSpinner.adapter = adapter
 
                 searchableSpinner?.onItemSelectedListener =
                     (object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                        override fun onItemSelected(
+                            p0: AdapterView<*>?,
+                            p1: View?,
+                            p2: Int,
+                            p3: Long
+                        ) {
                             val customer = customerDataList[p2]
                             val name = customer.name
                             val phone = customer.phone
@@ -134,120 +146,230 @@ class HerbFragment : Fragment() {
         }
 
         confirmBtn?.setOnClickListener {
-            val name = receiverName.text.toString().trim()
-            val address = receiverAddress.text.toString().trim()
-            val phone = receiverPhone.text.toString().trim()
-            val name2nd = receiverName2nd.text.toString().trim()
-            val recAddress2nd = receiverAddress2nd.text.toString().trim()
-            val phone2nd = receiverPhone2nd.text.toString().trim()
-
-            if (name.isEmpty()) {
-                Toast.makeText(activity, "Maaf, Nama tidak boleh kosong", Toast.LENGTH_SHORT).show()
-            } else if (address.isEmpty()) {
-                Toast.makeText(activity, "Maaf, Alamat tidak boleh kosong", Toast.LENGTH_SHORT)
-                    .show()
-            } else if (phone.isEmpty()) {
-                Toast.makeText(
-                    activity,
-                    "Maaf, No.Handphone tidak boleh kosong",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else if (sendAnotherCb.isChecked && name2nd.isEmpty()) {
-                Toast.makeText(
-                    activity,
-                    "Maaf, Nama penerima lain tidak boleh kosong",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else if (sendAnotherCb.isChecked && recAddress2nd.isEmpty()) {
-                Toast.makeText(
-                    activity,
-                    "Maaf, Alamat penerima lain tidak boleh kosong",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else if (sendAnotherCb.isChecked && phone2nd.isEmpty()) {
-                Toast.makeText(
-                    activity,
-                    "Maaf, No.Handphone penerima tidak boleh kosong",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-
-                pb.visibility = View.VISIBLE
-                totalPrice = 0L
-                getSalesName()
-
-                for(i in poList.indices) {
-                    totalPrice = totalPrice?.plus(poList[i].price!!)
+            AlertDialog.Builder(requireContext())
+                .setTitle("Konfirmasi Purchase Order")
+                .setMessage("Apakah anda yakin bahwa seluruh daftar obat pada purchase order ini sudah sesuai dengan pesanan ?\n\nJika Ya, maka stok obat akan terpotong, dan invoice dari PO ini akan segera terbit, ingin melanjutkan ?")
+                .setIcon(R.drawable.ic_baseline_warning_24)
+                .setPositiveButton("YA") { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                    accPO(
+                        receiverAddress,
+                        receiverAddress2nd,
+                        receiverName,
+                        receiverName2nd,
+                        receiverPhone,
+                        receiverPhone2nd,
+                        sendAnotherCb,
+                        pb,
+                        dialog,
+                        et1
+                    )
                 }
-
-
-                Handler().postDelayed({
-                    if(et1.isEnabled) {
-                        val uid = System.currentTimeMillis().toString()
-
-                        val data = mapOf(
-                            "uid" to uid,
-                            "product" to poList,
-                            "totalPrice" to totalPrice,
-                            "salesName" to salesName,
-                            "customerName" to name,
-                            "customerPhone" to  phone,
-                            "customerAddress" to address,
-                            "customer2ndName" to "" + name2nd,
-                            "customer2ndPhone" to  "" + phone2nd,
-                            "customer2ndAddress" to "" + address2nd,
-                            "status" to "Belum Disetujui",
-                        )
-
-                        FirebaseFirestore
-                            .getInstance()
-                            .collection("order")
-                            .document(uid)
-                            .set(data)
-                            .addOnCompleteListener {
-                                if(it.isSuccessful) {
-
-                                    for(i in poList.indices) {
-                                        FirebaseFirestore
-                                            .getInstance()
-                                            .collection("purchase_order")
-                                            .document(poList[i].uid!!)
-                                            .delete()
-                                    }
-
-                                    val customerData = mapOf(
-                                        "uid" to uid,
-                                        "name" to name,
-                                        "phone" to phone,
-                                        "address" to address,
-                                    )
-
-                                    FirebaseFirestore
-                                        .getInstance()
-                                        .collection("customer_data")
-                                        .document(uid)
-                                        .set(customerData)
-                                        .addOnCompleteListener {
-                                            binding?.rvOrderProcess?.visibility = View.GONE
-                                            binding?.noData?.visibility = View.VISIBLE
-                                            binding?.poBtn?.isEnabled = false
-                                            pb.visibility = View.GONE
-                                            dialog.dismiss()
-                                            showSuccessDialog()
-                                        }
-                                } else {
-                                    pb.visibility = View.GONE
-                                    dialog.dismiss()
-                                    showFailureDialog()
-                                }
-                            }
-                    }
-                }, 1500)
-            }
+                .setNegativeButton("TIDAK", null)
+                .show()
         }
 
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
+    }
+
+    private fun accPO(
+        receiverAddress: TextInputEditText,
+        receiverAddress2nd: TextInputEditText,
+        receiverName: TextInputEditText,
+        receiverName2nd: TextInputEditText,
+        receiverPhone: TextInputEditText,
+        receiverPhone2nd: TextInputEditText,
+        sendAnotherCb: CheckBox,
+        pb: ProgressBar,
+        dialog: Dialog,
+        et1: TextInputLayout
+    ) {
+        val name = receiverName.text.toString().trim()
+        val address = receiverAddress.text.toString().trim()
+        val phone = receiverPhone.text.toString().trim()
+        val name2nd = receiverName2nd.text.toString().trim()
+        val recAddress2nd = receiverAddress2nd.text.toString().trim()
+        val phone2nd = receiverPhone2nd.text.toString().trim()
+
+        if (name.isEmpty()) {
+            Toast.makeText(activity, "Maaf, Nama tidak boleh kosong", Toast.LENGTH_SHORT).show()
+        } else if (address.isEmpty()) {
+            Toast.makeText(activity, "Maaf, Alamat tidak boleh kosong", Toast.LENGTH_SHORT)
+                .show()
+        } else if (phone.isEmpty()) {
+            Toast.makeText(
+                activity,
+                "Maaf, No.Handphone tidak boleh kosong",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else if (sendAnotherCb.isChecked && name2nd.isEmpty()) {
+            Toast.makeText(
+                activity,
+                "Maaf, Nama penerima lain tidak boleh kosong",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else if (sendAnotherCb.isChecked && recAddress2nd.isEmpty()) {
+            Toast.makeText(
+                activity,
+                "Maaf, Alamat penerima lain tidak boleh kosong",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else if (sendAnotherCb.isChecked && phone2nd.isEmpty()) {
+            Toast.makeText(
+                activity,
+                "Maaf, No.Handphone penerima tidak boleh kosong",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+
+            pb.visibility = View.VISIBLE
+            totalPrice = 0L
+            getSalesName()
+
+            for (i in poList.indices) {
+                totalPrice = totalPrice?.plus(poList[i].price!!)
+            }
+
+            Handler().postDelayed({
+                val uid = System.currentTimeMillis().toString()
+                /// order po, yang bisa di lihat admin
+                val calendar = Calendar.getInstance()
+                val sdf = SimpleDateFormat("dd-MMMM-yyyy, HH:mm", Locale.getDefault())
+                date = sdf.format(calendar.time)
+                dateInMillis = System.currentTimeMillis()
+                val data = mapOf(
+                    "uid" to uid,
+                    "product" to poList,
+                    "totalPrice" to totalPrice,
+                    "salesName" to salesName,
+                    "customerName" to name,
+                    "customerPhone" to phone,
+                    "customerAddress" to address,
+                    "customer2ndName" to "" + name2nd,
+                    "customer2ndPhone" to "" + phone2nd,
+                    "customer2ndAddress" to "" + recAddress2nd,
+                    "date" to date,
+                    "dateInMillis" to dateInMillis,
+                )
+
+                FirebaseFirestore
+                    .getInstance()
+                    .collection("order")
+                    .document(uid)
+                    .set(data)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+
+                            for (i in poList.indices) {
+                                FirebaseFirestore
+                                    .getInstance()
+                                    .collection("purchase_order")
+                                    .document(poList[i].uid!!)
+                                    .delete()
+                            }
+
+                            /// customer data added
+                            if (et1.isEnabled) {
+                                val customerData = mapOf(
+                                    "uid" to uid,
+                                    "name" to name,
+                                    "phone" to phone,
+                                    "address" to address,
+                                )
+
+                                FirebaseFirestore
+                                    .getInstance()
+                                    .collection("customer_data")
+                                    .document(uid)
+                                    .set(customerData)
+                                    .addOnCompleteListener {
+                                        createInvoice(
+                                            pb,
+                                            dialog,
+                                            name,
+                                            phone,
+                                            address,
+                                            name2nd,
+                                            phone2nd,
+                                            recAddress2nd,
+                                            totalPrice!!,
+                                        )
+                                    }
+                            } else {
+                                createInvoice(
+                                    pb,
+                                    dialog,
+                                    name,
+                                    phone,
+                                    address,
+                                    name2nd,
+                                    phone2nd,
+                                    recAddress2nd,
+                                    totalPrice!!,
+                                )
+                            }
+                        } else {
+                            pb.visibility = View.GONE
+                            dialog.dismiss()
+                            showFailureDialog()
+                        }
+                    }
+            }, 1500)
+        }
+    }
+
+    private fun createInvoice(
+        pb: ProgressBar,
+        dialog: Dialog,
+        name: String,
+        phone: String,
+        address: String,
+        name2nd: String,
+        phone2nd: String,
+        recAddress2nd: String,
+        totalPrice: Long
+    ) {
+        /// buat invoice
+        val invoiceId =
+            System.currentTimeMillis().toString()
+        val invoice = mapOf(
+            "uid" to invoiceId,
+            "date" to date,
+            "dateInMillis" to dateInMillis,
+            "salesName" to salesName,
+            "customerName" to name,
+            "customerPhone" to phone,
+            "customerAddress" to address,
+            "customer2ndName" to name2nd,
+            "customer2ndPhone" to phone2nd,
+            "customer2ndAddress" to recAddress2nd,
+            "product" to poList,
+            "totalPrice" to totalPrice,
+        )
+
+        FirebaseFirestore
+            .getInstance()
+            .collection("invoice")
+            .document(invoiceId)
+            .set(invoice)
+            .addOnCompleteListener { inv ->
+                if (inv.isSuccessful) {
+                    binding?.rvOrderProcess?.visibility = View.GONE
+                    binding?.noData?.visibility = View.VISIBLE
+                    binding?.poBtn?.isEnabled = false
+                    pb.visibility = View.GONE
+                    dialog.dismiss()
+                    showSuccessDialog()
+                } else {
+                    binding?.rvOrderProcess?.visibility = View.GONE
+                    binding?.noData?.visibility = View.VISIBLE
+                    binding?.poBtn?.isEnabled = false
+                    pb.visibility = View.GONE
+                    dialog.dismiss()
+                    showFailureDialog()
+                }
+            }
     }
 
     private fun getSalesName() {
@@ -271,9 +393,11 @@ class HerbFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        binding?.rvOrderProcess?.layoutManager = LinearLayoutManager(activity)
-        adapter = POAdapter(binding?.poBtn)
-        binding?.rvOrderProcess?.adapter = adapter
+        Handler().postDelayed({
+            binding?.rvOrderProcess?.layoutManager = LinearLayoutManager(activity)
+            adapter = POAdapter(poList, binding?.poBtn)
+            binding?.rvOrderProcess?.adapter = adapter
+        }, 2000)
     }
 
     private fun initViewModel() {
@@ -286,7 +410,6 @@ class HerbFragment : Fragment() {
             if (productList.size > 0) {
                 poList.clear()
                 poList.addAll(productList)
-                adapter?.setData(poList)
                 binding?.noData?.visibility = View.GONE
                 binding?.poBtn?.isEnabled = true
 
@@ -311,10 +434,9 @@ class HerbFragment : Fragment() {
     private fun showSuccessDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Sukses Mengonfirmasi Purchase Order")
-            .setMessage("Selanjutnya, Admin akan melakukan konfirmasi")
+            .setMessage("Selanjutnya, Admin akan melakukan pemeriksaan, dan mempersiapkan obat berdasarkan PO ini")
             .setIcon(R.drawable.ic_baseline_check_circle_outline_24)
             .setPositiveButton("OK") { dialogInterface, _ ->
-
                 dialogInterface.dismiss()
             }
             .show()

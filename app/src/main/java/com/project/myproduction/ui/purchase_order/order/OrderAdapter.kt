@@ -38,11 +38,6 @@ class OrderAdapter : RecyclerView.Adapter<OrderAdapter.ViewHolder>() {
                 customerName.text = "Kepada Yth: ${model.customerName}"
                 customerAddress.text = "Alamat: ${model.customerAddress}"
                 totalPrice.text = "Sub Total: Rp.${format.format(model.totalPrice)}"
-                status.text = model.status
-
-                if(model.status == "Sudah Disetujui") {
-                    linearLayout.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.blue)
-                }
 
                 cv.setOnClickListener {
                     val intent = Intent(itemView.context, OrderDetailActivity::class.java)

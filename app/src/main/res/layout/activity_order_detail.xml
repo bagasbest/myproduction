@@ -33,6 +33,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <ImageButton
+        android:id="@+id/delete"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="16sp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_rounded_btn"
+        android:backgroundTint="@color/blue"
+        android:contentDescription="@string/image"
+        android:src="@drawable/ic_baseline_delete_24"
+        app:layout_constraintEnd_toStartOf="@+id/print"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -51,13 +65,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="16sp"
-        android:layout_marginBottom="16sp"
         android:layout_marginTop="16sp"
         android:layout_marginEnd="16sp"
         app:cardCornerRadius="10dp"
         app:cardElevation="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/accBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/backButton">
 
@@ -100,12 +114,6 @@
                 android:layout_height="wrap_content"
                 android:text="Alamat: " />
 
-            <TextView
-                android:id="@+id/status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Status: " />
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
@@ -125,7 +133,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
                     android:text="Nama Obat"
-                    android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -135,7 +142,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.1"
                     android:text="Qty"
-                    android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -145,16 +151,15 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
                     android:text="Total"
-                    android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
                 android:id="@+id/rvPo"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
                 android:layout_marginTop="5dp"
                 tools:listitem="@layout/item_po" />
 
@@ -165,8 +170,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_marginTop="16sp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp">
 
                 <TextView
                     android:id="@+id/textView14"
@@ -180,13 +185,13 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/salesName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Diajukan Oleh\n\nSales"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:id="@+id/salesName"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -195,27 +200,5 @@
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
-
-
-    <Button
-        android:id="@+id/accBtn"
-        android:layout_width="150dp"
-        android:layout_marginStart="16sp"
-        android:layout_marginBottom="16sp"
-        android:layout_height="wrap_content"
-        android:text="Setujui"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
-    <Button
-        android:id="@+id/decline"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16sp"
-        android:layout_marginBottom="16sp"
-        android:text="Tolak"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

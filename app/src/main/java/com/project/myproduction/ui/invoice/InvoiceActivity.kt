@@ -2,7 +2,9 @@ package com.project.myproduction.ui.invoice
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -19,6 +21,7 @@ class InvoiceActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityInvoiceBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
         initRecyclerView()
@@ -49,14 +52,16 @@ class InvoiceActivity : AppCompatActivity() {
                 val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
                 val format = sdf.format(Date(selection.toString().toLong()))
                 binding?.to?.text = format
-                to = selection.toString().toLong()
+                to = selection.toString().toLong() + 61200000
             }
         }
 
         binding?.filter?.setOnClickListener {
-            if(from != null && to != null) {
+            if(from != 0L && to != 0L) {
                 initRecyclerView()
                 initViewModel("filter")
+            } else {
+                Toast.makeText(this, "Anda harus menginputkan tanggal awal - tanggal akhir", Toast.LENGTH_SHORT).show()
             }
         }
     }
