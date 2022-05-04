@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyProduction">
         <activity
+            android:name=".ui.surat_jalan.SuratJalanDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.surat_jalan.SuratJalanActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.item_history.ItemHistoryActivity"
             android:exported="false" />
         <activity

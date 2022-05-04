@@ -19,6 +19,7 @@ import com.project.myproduction.ui.obat_umum.SingleHerbsActivity
 import com.project.myproduction.ui.purchase_order.POActivity
 import com.project.myproduction.ui.purchase_order.PODetailActivity
 import com.project.myproduction.ui.settings.SettingsActivity
+import com.project.myproduction.ui.surat_jalan.SuratJalanActivity
 
 class HomeActivity : AppCompatActivity() {
 
@@ -63,6 +64,10 @@ class HomeActivity : AppCompatActivity() {
 
         binding?.itemHistory?.setOnClickListener {
             startActivity(Intent(this, ItemHistoryActivity::class.java))
+        }
+
+        binding?.travelDocument?.setOnClickListener {
+            startActivity(Intent(this, SuratJalanActivity::class.java))
         }
 
     }

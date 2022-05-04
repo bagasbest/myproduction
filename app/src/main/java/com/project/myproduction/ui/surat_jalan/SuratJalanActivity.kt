@@ -1,4 +1,4 @@
-package com.project.myproduction.ui.invoice
+package com.project.myproduction.ui.surat_jalan
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,20 +7,23 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.project.myproduction.databinding.ActivityInvoiceBinding
+import com.project.myproduction.databinding.ActivitySuratJalanBinding
+import com.project.myproduction.ui.invoice.InvoiceAdapter
+import com.project.myproduction.ui.invoice.InvoiceViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class InvoiceActivity : AppCompatActivity() {
+class SuratJalanActivity : AppCompatActivity() {
 
-    private var binding: ActivityInvoiceBinding? = null
+    private var binding: ActivitySuratJalanBinding? = null
     private var adapter: InvoiceAdapter? = null
     private var from: Long? = 0L
     private var to: Long? = 0L
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityInvoiceBinding.inflate(layoutInflater)
+        binding = ActivitySuratJalanBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
         initRecyclerView()
@@ -66,9 +69,9 @@ class InvoiceActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        binding?.rvInvoice?.layoutManager = LinearLayoutManager(this)
-        adapter = InvoiceAdapter("invoice")
-        binding?.rvInvoice?.adapter = adapter
+        binding?.rvTravelDocument?.layoutManager = LinearLayoutManager(this)
+        adapter = InvoiceAdapter("travelDocument")
+        binding?.rvTravelDocument?.adapter = adapter
     }
 
     private fun initViewModel(option: String) {
