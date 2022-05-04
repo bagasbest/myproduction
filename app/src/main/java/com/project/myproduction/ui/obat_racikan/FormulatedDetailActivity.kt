@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -15,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.project.myproduction.R
 import com.project.myproduction.databinding.ActivityFormulatedDetailBinding
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -158,9 +158,39 @@ class FormulatedDetailActivity : AppCompatActivity() {
         }
 
         Handler().postDelayed({
-            binding?.progressBar?.visibility = View.GONE
-            showSuccessDialog()
+            outgoingStock(qty)
         }, 3000)
+    }
+
+    private fun outgoingStock(qtyProduct: Long) {
+
+        /// outgoing stock
+        val uid = System.currentTimeMillis().toString()
+        val calendar = Calendar.getInstance()
+        val sdf2 = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val outgoingDate = sdf2.format(calendar.time)
+
+        val data = mapOf(
+            "uid" to uid,
+            "status" to "Outgoing",
+            "stock" to qtyProduct,
+            "date" to outgoingDate,
+        )
+
+        FirebaseFirestore
+            .getInstance()
+            .collection("item_history")
+            .document(uid)
+            .set(data)
+            .addOnCompleteListener {
+                if(it.isSuccessful) {
+                    binding?.progressBar?.visibility = View.GONE
+                    showSuccessDialog()
+                } else {
+                    binding?.progressBar?.visibility = View.GONE
+                    showFailureDialog()
+                }
+            }
     }
 
     private fun initRecyclerView() {

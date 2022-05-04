@@ -20,6 +20,7 @@ import com.project.myproduction.R
 import com.project.myproduction.databinding.ActivityHerbsDetailBinding
 import com.project.myproduction.ui.obat_racikan.material.MaterialAddEditActivity
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -69,6 +70,86 @@ class HerbsDetailActivity : AppCompatActivity() {
         binding?.addProductBtn?.setOnClickListener {
             formValidation()
         }
+
+        binding?.stockTaking?.setOnClickListener {
+            stockTaking()
+        }
+    }
+
+    private fun stockTaking() {
+        val currentStock = model?.stock
+        val stockEt: TextInputEditText
+        val confirmBtn: Button
+        val pb: ProgressBar
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.popup_stock_taking)
+        stockEt = dialog.findViewById(R.id.stock)
+        confirmBtn = dialog.findViewById(R.id.confirmBtn)
+        pb = dialog.findViewById(R.id.progressBar)
+
+        confirmBtn?.setOnClickListener {
+            val stock = stockEt.text.toString().trim()
+
+            if(stock.isEmpty() || stock.toLong() <= 0) {
+                Toast.makeText(this, "Maaf, stok minimal 1", Toast.LENGTH_SHORT).show()
+            } else {
+                if (currentStock!! > 0) {
+                    pb.visibility = View.VISIBLE
+                    val calendar = Calendar.getInstance()
+                    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    val date = sdf.format(calendar.time)
+
+                    val uid = System.currentTimeMillis().toString()
+                    val data = mapOf(
+                        "uid" to uid,
+                        "stock" to stock,
+                        "status" to "Stock-taking",
+                        "date" to date,
+                    )
+
+                    FirebaseFirestore
+                        .getInstance()
+                        .collection("item_history")
+                        .document(uid)
+                        .set(data)
+                        .addOnCompleteListener {
+                            if(it.isSuccessful) {
+                                cutStock(stock, dialog, pb)
+                            } else {
+                                dialog.dismiss()
+                                pb.visibility = View.GONE
+                                Toast.makeText(this, "Gagal mengambil stok, silahkan periksa koneksi internet anda dan coba lagi nanti", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                } else{
+                    Toast.makeText(this, "Stok tidak mencukupi", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
+    }
+
+    private fun cutStock(stock: String, dialog: Dialog, pb: ProgressBar) {
+        val resultStock = binding?.stock?.text.toString().toLong() - stock.toLong()
+        FirebaseFirestore
+            .getInstance()
+            .collection("common_herbs")
+            .document(model?.uid!!)
+            .update("stock", resultStock)
+            .addOnCompleteListener {
+                if(it.isSuccessful) {
+                    dialog.dismiss()
+                    binding?.stock?.setText(resultStock.toString())
+                    pb.visibility = View.GONE
+                    Toast.makeText(this, "Sukses mengambil stok, log ini akan masuk item history", Toast.LENGTH_SHORT).show()
+                } else {
+                    dialog.dismiss()
+                    pb.visibility = View.GONE
+                    Toast.makeText(this, "Gagal mengambil stok, silahkan periksa koneksi internet anda dan coba lagi nanti", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     private fun formValidation() {
@@ -134,11 +215,41 @@ class HerbsDetailActivity : AppCompatActivity() {
             .update("stock", newStock)
 
         Handler().postDelayed({
-            binding?.progressBar?.visibility = View.GONE
-            showSuccessDialog()
+            outgoingStock(qtyProduct)
         }, 3000)
 
 
+    }
+
+    private fun outgoingStock(qtyProduct: Long) {
+
+        /// outgoing stock
+        val uid = System.currentTimeMillis().toString()
+        val calendar = Calendar.getInstance()
+        val sdf2 = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val outgoingDate = sdf2.format(calendar.time)
+
+        val data = mapOf(
+            "uid" to uid,
+            "status" to "Outgoing",
+            "stock" to qtyProduct,
+            "date" to outgoingDate,
+        )
+
+        FirebaseFirestore
+            .getInstance()
+            .collection("item_history")
+            .document(uid)
+            .set(data)
+            .addOnCompleteListener {
+                if(it.isSuccessful) {
+                    binding?.progressBar?.visibility = View.GONE
+                    showSuccessDialog()
+                } else {
+                    binding?.progressBar?.visibility = View.GONE
+                    showFailureDialog()
+                }
+            }
     }
 
     @SuppressLint("SetTextI18n")
@@ -168,9 +279,8 @@ class HerbsDetailActivity : AppCompatActivity() {
                         .update("stock", currentStock+stock.toLong())
                         .addOnCompleteListener {
                             if(it.isSuccessful) {
-                                dialog.dismiss()
                                 binding?.stock?.setText("${currentStock+stock.toLong()}")
-                                Toast.makeText(this, "Sukses mengupdate stok", Toast.LENGTH_SHORT).show()
+                                incomingStock(dialog, pb, stock)
                             } else {
                                 dialog.dismiss()
                                 Toast.makeText(this, "Gagal mengupdate stok, silahkan periksa koneksi internet anda dan coba lagi nanti", Toast.LENGTH_SHORT).show()
@@ -182,6 +292,36 @@ class HerbsDetailActivity : AppCompatActivity() {
 
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
+    }
+
+    private fun incomingStock(dialog: Dialog, pb: ProgressBar, stock: String) {
+        val uid = System.currentTimeMillis().toString()
+        val calendar = Calendar.getInstance()
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val date = sdf.format(calendar.time)
+        val data = mapOf(
+            "uid" to uid,
+            "status" to "Incoming",
+            "date" to date,
+            "stock" to stock.toLong(),
+        )
+
+        FirebaseFirestore
+            .getInstance()
+            .collection("item_history")
+            .document(uid)
+            .set(data)
+            .addOnCompleteListener {
+                if(it.isSuccessful) {
+                    pb.visibility = View.GONE
+                    dialog.dismiss()
+                    Toast.makeText(this, "Sukses mengupdate stok", Toast.LENGTH_SHORT).show()
+                } else {
+                    pb.visibility = View.GONE
+                    dialog.dismiss()
+                    Toast.makeText(this, "Gagal mengupdate stok, silahkan periksa koneksi internet anda dan coba lagi nanti", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     private fun showConfirmDelete() {
