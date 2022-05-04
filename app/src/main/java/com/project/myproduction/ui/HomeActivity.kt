@@ -13,6 +13,7 @@ import com.project.myproduction.R
 import com.project.myproduction.auth.LoginActivity
 import com.project.myproduction.databinding.ActivityHomeBinding
 import com.project.myproduction.ui.invoice.InvoiceActivity
+import com.project.myproduction.ui.item_history.ItemHistoryActivity
 import com.project.myproduction.ui.obat_racikan.FormulatedActivity
 import com.project.myproduction.ui.obat_umum.SingleHerbsActivity
 import com.project.myproduction.ui.purchase_order.POActivity
@@ -58,6 +59,10 @@ class HomeActivity : AppCompatActivity() {
 
         binding?.invoice?.setOnClickListener {
             startActivity(Intent(this, InvoiceActivity::class.java))
+        }
+
+        binding?.itemHistory?.setOnClickListener {
+            startActivity(Intent(this, ItemHistoryActivity::class.java))
         }
 
     }

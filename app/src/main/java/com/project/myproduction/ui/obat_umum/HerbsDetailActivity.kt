@@ -102,7 +102,7 @@ class HerbsDetailActivity : AppCompatActivity() {
                     val uid = System.currentTimeMillis().toString()
                     val data = mapOf(
                         "uid" to uid,
-                        "stock" to stock,
+                        "stock" to stock.toLong(),
                         "status" to "Stock-taking",
                         "date" to date,
                     )

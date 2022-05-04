@@ -3,6 +3,7 @@ package com.project.myproduction
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.project.myproduction.auth.LoginActivity
@@ -20,6 +21,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+
+        Glide.with(this)
+            .load(R.drawable.icon)
+            .into(binding!!.icon)
 
         checkIsUserBlockedOrNot()
 
