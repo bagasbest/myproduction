@@ -115,18 +115,21 @@
                     android:id="@+id/tanggal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:layout_marginTop="10dp"
                     android:text="Tanggal: " />
 
                 <TextView
                     android:id="@+id/customerName"
                     android:layout_width="wrap_content"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content"
                     android:text="Kepada Yth: " />
 
                 <TextView
                     android:id="@+id/customerPhone"
                     android:layout_width="wrap_content"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content"
                     android:text="No.Handphone: " />
 
@@ -134,12 +137,24 @@
                     android:id="@+id/customerAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:text="Alamat: " />
+
+
+                <TextView
+                    android:id="@+id/productName"
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="16dp"
+                    android:layout_height="wrap_content"
+                    android:text="Nama Produk: " />
 
                 <TextView
                     android:id="@+id/priceFormulated"
                     android:layout_width="wrap_content"
                     android:visibility="gone"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content"
                     android:text="Harga: Rp." />
 
@@ -147,6 +162,7 @@
                     android:id="@+id/qtyFormulated"
                     android:layout_width="wrap_content"
                     android:visibility="gone"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content"
                     android:text="Kuantitas dipesan:" />
 

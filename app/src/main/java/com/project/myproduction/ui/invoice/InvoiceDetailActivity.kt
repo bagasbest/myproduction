@@ -7,6 +7,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.myproduction.databinding.ActivityInvoiceDetailBinding
 import com.project.myproduction.ui.purchase_order.order.OrderPOAdapter
+import com.project.myproduction.ui.purchase_order.order.OrderPOAdapter2
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
@@ -14,6 +15,7 @@ class InvoiceDetailActivity : AppCompatActivity() {
 
     private var binding: ActivityInvoiceDetailBinding? = null
     private var adapter: OrderPOAdapter? = null
+    private var adapter2: OrderPOAdapter2? = null
     private var model: InvoiceModel? = null
     private var totalPrice = 0L
 
@@ -32,6 +34,20 @@ class InvoiceDetailActivity : AppCompatActivity() {
         binding?.invoiceId?.text = "INVOICE ID: INV-${model?.uid}"
         binding?.salesName?.text = "Nama Sales: ${model?.salesName}"
 
+        if(model?.category == "common") {
+            binding?.category?.text = "Kategori: Obat Umum"
+            binding?.rvCommon?.visibility = View.VISIBLE
+            binding?.common1?.visibility = View.VISIBLE
+        } else {
+            binding?.category?.text = "Kategori: Obat Racikan"
+            binding?.rvFormulated?.visibility = View.VISIBLE
+            binding?.komposisi?.visibility = View.VISIBLE
+            binding?.qtyFormulated?.visibility = View.VISIBLE
+            binding?.productName?.visibility = View.VISIBLE
+            binding?.productName?.text = "Nama Produk Racikan: ${model?.product!![0].name}"
+            binding?.qtyFormulated?.text = "Kuantitas Pemesanan: ${model?.product!![0].qty}"
+        }
+
         if(model?.customer2ndName != "") {
             binding?.otherCustomer?.visibility = View.VISIBLE
             binding?.customerName2nd?.text = "Nama: ${model?.customer2ndName}"
@@ -48,10 +64,17 @@ class InvoiceDetailActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        binding?.rvPo?.layoutManager = LinearLayoutManager(this)
-        adapter = OrderPOAdapter()
-        binding?.rvPo?.adapter = adapter
-        adapter!!.setData(model?.product!!)
+        if(model?.category == "common") {
+            binding?.rvCommon?.layoutManager = LinearLayoutManager(this)
+            adapter = OrderPOAdapter()
+            binding?.rvCommon?.adapter = adapter
+            adapter!!.setData(model?.product!!)
+        } else {
+            binding?.rvFormulated?.layoutManager = LinearLayoutManager(this)
+            adapter2 = OrderPOAdapter2()
+            binding?.rvFormulated?.adapter = adapter2
+            adapter2!!.setData(model?.product!![0].material!!)
+        }
     }
 
     override fun onDestroy() {

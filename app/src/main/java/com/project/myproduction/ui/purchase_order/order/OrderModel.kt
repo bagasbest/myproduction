@@ -10,6 +10,7 @@ data class OrderModel(
     var product: ArrayList<POModel>? = null,
     var totalPrice: Long? = 0L,
     var salesName: String? = null,
+    var salesId: String? = null,
     var customerName: String? = null,
     var customerPhone: String? = null,
     var customerAddress: String? = null,

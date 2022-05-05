@@ -96,11 +96,14 @@ class HomeActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener {
                 role = "" + it.data!!["role"]
-                if("" + it.data!!["status"] != "Blokir") {
-                    val name = "" + it.data!!["name"]
+                val name = "" + it.data!!["name"]
+
+                if("" + it.data!!["status"] != "Blokir" && role == "admin") {
                     binding?.textView8?.text = "Selamat datang $name, selamat bekerja :)"
                     binding?.gridLayout2?.visibility = View.VISIBLE
                     showImage()
+                } else if ("" + it.data!!["status"] != "Blokir" && role == "sales") {
+                    binding?.textView8?.text = "Selamat datang $name, selamat bekerja :)"
                 } else {
                     showBlockAlert()
                 }

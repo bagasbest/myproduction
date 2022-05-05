@@ -40,6 +40,8 @@ class OrderDetailActivity : AppCompatActivity() {
             binding?.rvPoFormulated?.visibility = View.VISIBLE
             binding?.priceFormulated?.visibility = View.VISIBLE
             binding?.qtyFormulated?.visibility = View.VISIBLE
+            binding?.productName?.visibility = View.VISIBLE
+            binding?.productName?.text = "Nama Produk Racikan: ${model?.product!![0].name}"
             binding?.priceFormulated?.text = "Harga: Rp.${format.format(model?.product!![0].price)}"
             binding?.qtyFormulated?.text = "Kuantitas Pemesanan: ${model?.product!![0].qty}"
         }

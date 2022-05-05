@@ -35,6 +35,7 @@ class HerbFragment : Fragment() {
     private var binding: FragmentHerbBinding? = null
     private var adapter: POAdapter? = null
     private var salesName: String? = null
+    private var salesId: String? = null
     private var poList = ArrayList<POModel>()
     private var totalPrice: Long? = 0L
     private var date: String? = null
@@ -243,6 +244,7 @@ class HerbFragment : Fragment() {
                     "product" to poList,
                     "totalPrice" to totalPrice,
                     "salesName" to salesName,
+                    "salesId" to salesId,
                     "customerName" to name,
                     "customerPhone" to phone,
                     "customerAddress" to address,
@@ -356,6 +358,7 @@ class HerbFragment : Fragment() {
             "customer2ndAddress" to recAddress2nd,
             "product" to poList,
             "totalPrice" to totalPrice,
+            "category" to "common",
         )
 
         FirebaseFirestore
@@ -384,6 +387,7 @@ class HerbFragment : Fragment() {
 
     private fun getSalesName() {
         val uid = FirebaseAuth.getInstance().currentUser!!.uid
+        salesId = uid
         FirebaseFirestore
             .getInstance()
             .collection("users")

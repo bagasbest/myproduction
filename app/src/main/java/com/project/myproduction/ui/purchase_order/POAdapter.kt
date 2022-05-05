@@ -108,6 +108,11 @@ class POAdapter(private val poList: ArrayList<POModel>, private val poBtn: Butto
                     }
             }
 
+            val prefs = context.getSharedPreferences(
+                "formulated", Context.MODE_PRIVATE
+            )
+            prefs?.edit()?.putBoolean("isAdd", false)?.apply()
+
             Handler().postDelayed({
                 progressDialog.dismiss()
                 Toast.makeText(context, "Berhasil menghapus produk", Toast.LENGTH_SHORT).show()

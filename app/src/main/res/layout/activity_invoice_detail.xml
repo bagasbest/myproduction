@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>    <ScrollView
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -26,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/bold"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="30dp"
             android:text="INVOICE"
             android:textColor="@color/black"
             android:textSize="20sp"
@@ -116,6 +117,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/customerAddress" />
 
+
+        <TextView
+            android:id="@+id/category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kategori: "
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/invoiceId" />
+
         <TextView
             android:id="@+id/salesName"
             android:layout_width="wrap_content"
@@ -123,15 +134,37 @@
             android:layout_height="wrap_content"
             android:text="Nama Sales:"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/invoiceId" />
+            app:layout_constraintTop_toBottomOf="@+id/category" />
 
+
+
+        <TextView
+            android:id="@+id/productName"
+            android:layout_width="wrap_content"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Nama Produk:"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/salesName"
+            app:layout_constraintTop_toBottomOf="@+id/salesName" />
+
+        <TextView
+            android:id="@+id/qtyFormulated"
+            android:layout_width="wrap_content"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            android:text="Kuantitas dipesan:"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/productName"
+            app:layout_constraintTop_toBottomOf="@+id/productName" />
 
         <LinearLayout
             android:id="@+id/linearLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/salesName"
+            app:layout_constraintTop_toBottomOf="@+id/qtyFormulated"
             tools:layout_editor_absoluteX="16dp">
 
 
@@ -144,6 +177,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:visibility="gone"
+                android:id="@+id/common1"
                 android:layout_marginTop="16sp"
                 android:layout_weight="1"
                 android:orientation="horizontal">
@@ -175,11 +210,33 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvPo"
+                android:id="@+id/rvCommon"
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:layout_height="250dp"
                 android:layout_marginTop="5dp"
                 tools:listitem="@layout/item_po" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Komposisi"
+                android:textSize="16sp"
+                android:id="@+id/komposisi"
+                android:visibility="gone"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvFormulated"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:visibility="gone"
+                android:layout_marginTop="5dp"
+                tools:listitem="@layout/item_po2" />
+
 
             <View
                 android:layout_width="match_parent"
@@ -229,11 +286,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
                 android:text="Pembayaran Atas Nama\nPT.ENERGI KREASI ASIA" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
                 android:text="Bank .... dengan No.Rekening ..."
                 android:textStyle="bold" />
 
@@ -255,6 +314,7 @@
                 <TextView
                     android:id="@+id/customerName2nd"
                     android:layout_width="wrap_content"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content"
                     android:text="Kepada Yth," />
 
@@ -262,12 +322,14 @@
                     android:id="@+id/phone2nd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:text="No.Hanphone" />
 
                 <TextView
                     android:id="@+id/address2nd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:text="Alamat" />
 
             </LinearLayout>

@@ -16,6 +16,7 @@ data class InvoiceModel(
     var customer2ndName: String? = null,
     var customer2ndPhone: String? = null,
     var customer2ndAddress: String? = null,
+    var category: String? = null,
     var product: ArrayList<POModel>? = null,
     var totalPrice: Long? = 0L,
 ) : Parcelable

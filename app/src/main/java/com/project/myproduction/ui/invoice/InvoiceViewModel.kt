@@ -33,6 +33,7 @@ class InvoiceViewModel : ViewModel() {
                         model.customerAddress = document.data["customerAddress"].toString()
                         model.customerName = document.data["customerName"].toString()
                         model.date = document.data["date"].toString()
+                        model.category = document.data["category"].toString()
                         model.dateInMillis = document.data["dateInMillis"] as Long
                         model.product = document.toObject(InvoiceModel::class.java).product
 
@@ -71,6 +72,7 @@ class InvoiceViewModel : ViewModel() {
                         model.customerAddress = document.data["customerAddress"].toString()
                         model.customerName = document.data["customerName"].toString()
                         model.date = document.data["date"].toString()
+                        model.category = document.data["category"].toString()
                         model.dateInMillis = document.data["dateInMillis"] as Long
                         model.product = document.toObject(InvoiceModel::class.java).product
 

@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.project.myproduction.R
 import com.project.myproduction.databinding.ActivityOrderBinding
 
@@ -14,11 +16,26 @@ class OrderActivity : AppCompatActivity() {
     private var binding: ActivityOrderBinding? = null
     private var adapter: OrderAdapter? = null
     private var category = ""
+    private var role = ""
+    private var uid = ""
 
     override fun onResume() {
         super.onResume()
-        initRecyclerView()
-        initViewModel(category)
+        checkRole()
+    }
+
+    private fun checkRole() {
+        uid = FirebaseAuth.getInstance().currentUser!!.uid
+        FirebaseFirestore
+            .getInstance()
+            .collection("users")
+            .document(uid)
+            .get()
+            .addOnSuccessListener {
+                role = "" + it.data!!["role"]
+                initRecyclerView()
+                initViewModel(category)
+            }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,15 +77,27 @@ class OrderActivity : AppCompatActivity() {
         val viewModel = ViewModelProvider(this)[OrderViewModel::class.java]
 
         binding?.progressBar?.visibility = View.VISIBLE
-        if(category == "" || category == "Semua") {
-            viewModel.setListOrder()
-        } else if(category == "Obat Umum") {
-            viewModel.setListOrderByCommon()
+        if(role == "admin") {
+            if(category == "" || category == "Semua") {
+                viewModel.setListOrder()
+            } else if(category == "Obat Umum") {
+                viewModel.setListOrderByCommon()
 
-        } else if (category == "Obat Racikan") {
-            viewModel.setListOrderByFormulated()
+            } else if (category == "Obat Racikan") {
+                viewModel.setListOrderByFormulated()
 
+            }
+        } else {
+            if(category == "" || category == "Semua") {
+                viewModel.setListOrderBySalesId(uid)
+            } else if(category == "Obat Umum") {
+                viewModel.setListOrderByCommonAndSalesId(uid)
+
+            } else if (category == "Obat Racikan") {
+                viewModel.setListOrderByFormulatedAndSalesId(uid)
+            }
         }
+
         viewModel.getOrder().observe(this) { order ->
             if (order.size > 0) {
                 adapter?.setData(order)
