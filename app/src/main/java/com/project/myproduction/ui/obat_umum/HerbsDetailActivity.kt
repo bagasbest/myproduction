@@ -30,7 +30,7 @@ class HerbsDetailActivity : AppCompatActivity() {
     private var model : HerbsModel? = null
     private var name: String? = null
     private var userId: String? = null
-
+    private var poId: String? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,12 +68,28 @@ class HerbsDetailActivity : AppCompatActivity() {
         }
 
         binding?.addProductBtn?.setOnClickListener {
-            formValidation()
+            checkIsThisProductAddedBeforeOrNot()
         }
 
         binding?.stockTaking?.setOnClickListener {
             stockTaking()
         }
+    }
+
+    private fun checkIsThisProductAddedBeforeOrNot() {
+        FirebaseFirestore
+            .getInstance()
+            .collection("purchase_order")
+            .whereEqualTo("productId", model?.uid)
+            .whereEqualTo("salesId", userId)
+            .get()
+            .addOnSuccessListener {
+                if(it.size() == 0) {
+                    formValidation()
+                } else {
+                    Toast.makeText(this, "Anda sudah menambahkan produk ini pada purchase order, produk tidak boleh duplikat, silahkan hapus produk di PO jika ada yang salah", Toast.LENGTH_LONG).show()
+                }
+            }
     }
 
     private fun stockTaking() {
@@ -172,10 +188,10 @@ class HerbsDetailActivity : AppCompatActivity() {
             }
             materialList.add(model?.uid!!)
 
-            val uid = System.currentTimeMillis().toString()
+            poId = System.currentTimeMillis().toString()
 
             val data = mapOf(
-                "uid" to uid,
+                "uid" to poId,
                 "name" to model?.name,
                 "nameTemp" to model?.name?.lowercase(Locale.getDefault()),
                 "code" to model?.code,
@@ -193,7 +209,7 @@ class HerbsDetailActivity : AppCompatActivity() {
             FirebaseFirestore
                 .getInstance()
                 .collection("purchase_order")
-                .document(uid)
+                .document(poId!!)
                 .set(data)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
@@ -224,13 +240,12 @@ class HerbsDetailActivity : AppCompatActivity() {
     private fun outgoingStock(qtyProduct: Long) {
 
         /// outgoing stock
-        val uid = System.currentTimeMillis().toString()
         val calendar = Calendar.getInstance()
         val sdf2 = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val outgoingDate = sdf2.format(calendar.time)
 
         val data = mapOf(
-            "uid" to uid,
+            "uid" to poId,
             "status" to "Outgoing",
             "stock" to qtyProduct,
             "date" to outgoingDate,
@@ -239,7 +254,7 @@ class HerbsDetailActivity : AppCompatActivity() {
         FirebaseFirestore
             .getInstance()
             .collection("item_history")
-            .document(uid)
+            .document(poId!!)
             .set(data)
             .addOnCompleteListener {
                 if(it.isSuccessful) {

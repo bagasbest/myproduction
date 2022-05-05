@@ -1,25 +1,24 @@
 package com.project.myproduction.ui.purchase_order.order
 
 import android.annotation.SuppressLint
-import android.app.ProgressDialog
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 import com.project.myproduction.R
 import com.project.myproduction.databinding.ActivityOrderDetailBinding
-import com.project.myproduction.ui.obat_racikan.FormulatedModel
-import java.text.SimpleDateFormat
-import java.util.*
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 class OrderDetailActivity : AppCompatActivity() {
 
     private var binding: ActivityOrderDetailBinding? = null
     private var model: OrderModel? = null
     private var adapter: OrderPOAdapter? = null
+    private var adapter2: OrderPOAdapter2? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +29,20 @@ class OrderDetailActivity : AppCompatActivity() {
         model = intent.getParcelableExtra(EXTRA_DATA)
         initRecyclerView()
         binding?.poId?.text = "PO ID: ${model?.uid}"
+        if(model?.category == "common") {
+            binding?.category?.text = "Kategori: Obat Umum"
+            binding?.common1?.visibility = View.VISIBLE
+            binding?.rvPoCommon?.visibility = View.VISIBLE
+        } else {
+            binding?.category?.text = "Kategori: Obat Racikan"
+            val format: NumberFormat = DecimalFormat("#,###")
+            binding?.formulated1?.visibility = View.VISIBLE
+            binding?.rvPoFormulated?.visibility = View.VISIBLE
+            binding?.priceFormulated?.visibility = View.VISIBLE
+            binding?.qtyFormulated?.visibility = View.VISIBLE
+            binding?.priceFormulated?.text = "Harga: Rp.${format.format(model?.product!![0].price)}"
+            binding?.qtyFormulated?.text = "Kuantitas Pemesanan: ${model?.product!![0].qty}"
+        }
         binding?.customerName?.text = "Kepada Yth: ${model?.customerName}"
         binding?.customerPhone?.text = "No.Handphone: ${model?.customerPhone}"
         binding?.customerAddress?.text = "Alamat: ${model?.customerAddress}"
@@ -78,10 +91,17 @@ class OrderDetailActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        binding?.rvPo?.layoutManager = LinearLayoutManager(this)
-        adapter = OrderPOAdapter()
-        binding?.rvPo?.adapter = adapter
-        adapter!!.setData(model?.product!!)
+        if(model?.category == "common") {
+            binding?.rvPoCommon?.layoutManager = LinearLayoutManager(this)
+            adapter = OrderPOAdapter()
+            binding?.rvPoCommon?.adapter = adapter
+            adapter!!.setData(model?.product!!)
+        } else {
+            binding?.rvPoFormulated?.layoutManager = LinearLayoutManager(this)
+            adapter2 = OrderPOAdapter2()
+            binding?.rvPoFormulated?.adapter = adapter2
+            adapter2!!.setData(model?.product!![0].material!!)
+        }
     }
 
     override fun onDestroy() {

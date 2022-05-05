@@ -37,6 +37,81 @@ class OrderViewModel : ViewModel() {
                         model.customerAddress = document.data["customerAddress"].toString()
                         model.customerName = document.data["customerName"].toString()
                         model.date = document.data["date"].toString()
+                        model.category = document.data["category"].toString()
+                        model.product = document.toObject(OrderModel::class.java).product
+
+                        listData.add(model)
+                    }
+                    orderList.postValue(listData)
+                }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting documents: ", exception)
+                }
+        } catch (error: Exception) {
+            error.printStackTrace()
+        }
+    }
+
+    fun setListOrderByCommon() {
+        listData.clear()
+
+        try {
+            FirebaseFirestore.getInstance().collection("order")
+                .whereEqualTo("category", "common")
+                .get()
+                .addOnSuccessListener { documents ->
+                    for (document in documents) {
+                        val model = OrderModel()
+
+                        model.customer2ndAddress = document.data["customer2ndAddress"].toString()
+                        model.uid = document.data["uid"].toString()
+                        model.customer2ndName = document.data["customer2ndName"].toString()
+                        model.customer2ndPhone = document.data["customer2ndPhone"].toString()
+                        model.totalPrice = document.data["totalPrice"] as Long
+                        model.dateInMillis = document.data["dateInMillis"] as Long
+                        model.customerPhone = document.data["customerPhone"].toString()
+                        model.salesName = document.data["salesName"].toString()
+                        model.customerAddress = document.data["customerAddress"].toString()
+                        model.customerName = document.data["customerName"].toString()
+                        model.date = document.data["date"].toString()
+                        model.category = document.data["category"].toString()
+                        model.product = document.toObject(OrderModel::class.java).product
+
+                        listData.add(model)
+                    }
+                    orderList.postValue(listData)
+                }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting documents: ", exception)
+                }
+        } catch (error: Exception) {
+            error.printStackTrace()
+        }
+    }
+
+    fun setListOrderByFormulated() {
+        listData.clear()
+
+        try {
+            FirebaseFirestore.getInstance().collection("order")
+                .whereEqualTo("category", "formulated")
+                .get()
+                .addOnSuccessListener { documents ->
+                    for (document in documents) {
+                        val model = OrderModel()
+
+                        model.customer2ndAddress = document.data["customer2ndAddress"].toString()
+                        model.uid = document.data["uid"].toString()
+                        model.customer2ndName = document.data["customer2ndName"].toString()
+                        model.customer2ndPhone = document.data["customer2ndPhone"].toString()
+                        model.totalPrice = document.data["totalPrice"] as Long
+                        model.dateInMillis = document.data["dateInMillis"] as Long
+                        model.customerPhone = document.data["customerPhone"].toString()
+                        model.salesName = document.data["salesName"].toString()
+                        model.customerAddress = document.data["customerAddress"].toString()
+                        model.customerName = document.data["customerName"].toString()
+                        model.date = document.data["date"].toString()
+                        model.category = document.data["category"].toString()
                         model.product = document.toObject(OrderModel::class.java).product
 
                         listData.add(model)

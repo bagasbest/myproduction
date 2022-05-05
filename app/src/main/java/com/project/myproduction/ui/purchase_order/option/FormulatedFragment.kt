@@ -1,11 +1,11 @@
 package com.project.myproduction.ui.purchase_order.option
 
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -255,6 +255,7 @@ class FormulatedFragment : Fragment() {
                         "customer2ndAddress" to "" + recAddress2nd,
                         "date" to date,
                         "dateInMillis" to dateInMillis,
+                        "category" to "formulated",
                     )
 
                     FirebaseFirestore
@@ -312,6 +313,15 @@ class FormulatedFragment : Fragment() {
                                         recAddress2nd,
                                         totalPrice!!,
                                     )
+                                }
+
+                                /// update customer name for item_history
+                                for(i in poList.indices) {
+                                    FirebaseFirestore
+                                        .getInstance()
+                                        .collection("item_history")
+                                        .document(poList[i].uid!!)
+                                        .update("customerName", name)
                                 }
                             } else {
                                 pb.visibility = View.GONE
@@ -440,7 +450,10 @@ class FormulatedFragment : Fragment() {
             .setMessage("Selanjutnya, Admin akan melakukan konfirmasi")
             .setIcon(R.drawable.ic_baseline_check_circle_outline_24)
             .setPositiveButton("OK") { dialogInterface, _ ->
-
+                val prefs = activity?.getSharedPreferences(
+                    "formulated", Context.MODE_PRIVATE
+                )
+                prefs?.edit()?.putBoolean("isAdd", false)?.apply()
                 dialogInterface.dismiss()
             }
             .show()

@@ -2,6 +2,7 @@ package com.project.myproduction.ui.item_history
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +24,6 @@ class ItemHistoryAdapter : RecyclerView.Adapter<ItemHistoryAdapter.ViewHolder>()
     inner class ViewHolder(private val binding: ItemHistoryBinding) : RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
         fun bind(model: ItemHistoryModel) {
-            val format: NumberFormat = DecimalFormat("#,###")
             with(binding) {
 
 
@@ -31,21 +31,24 @@ class ItemHistoryAdapter : RecyclerView.Adapter<ItemHistoryAdapter.ViewHolder>()
                 date.text = model.date
                 when (model.status) {
                     "Incoming" -> {
+                        customerName.visibility = View.GONE
                         stock.text = "+ ${model.stock}"
                         view6.backgroundTintList = ContextCompat.getColorStateList(itemView.context, android.R.color.holo_red_light)
                     }
                     "Stock-taking" -> {
+                        customerName.visibility = View.GONE
                         stock.text = "${model.stock}"
                         view6.backgroundTintList = ContextCompat.getColorStateList(itemView.context, android.R.color.holo_orange_dark)
                     }
                     else -> {
+                        customerName.visibility = View.VISIBLE
+                        customerName.text = model.customerName
                         stock.text = "- ${model.stock}"
                         view6.backgroundTintList = ContextCompat.getColorStateList(itemView.context, android.R.color.holo_blue_dark)
                     }
                 }
             }
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

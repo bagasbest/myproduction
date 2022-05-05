@@ -5,4 +5,5 @@ data class ItemHistoryModel(
     var status: String? = null,
     var date: String? = null,
     var stock: Long? = 0L,
+    var customerName: String? = null,
 )

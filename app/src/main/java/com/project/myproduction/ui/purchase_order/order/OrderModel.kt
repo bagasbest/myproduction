@@ -17,5 +17,6 @@ data class OrderModel(
     var customer2ndPhone: String? = null,
     var customer2ndAddress: String? = null,
     var date: String? = null,
+    var category: String? = null,
     var dateInMillis: Long? = 0L,
 ) : Parcelable

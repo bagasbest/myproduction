@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_weight="1">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="0.4"
+        android:layout_height="wrap_content"
+        android:text="Nama Obat"
+        android:textColor="@color/black"
+        android:id="@+id/name" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="0.1"
+        android:layout_height="wrap_content"
+        android:text="R001"
+        android:textColor="@color/black"
+        android:id="@+id/code" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="0.4"
+        android:layout_height="wrap_content"
+        android:text="1 x 100gr"
+        android:textAlignment="textEnd"
+        android:textColor="@color/black"
+        android:id="@+id/qtyType" />
+
+</LinearLayout>

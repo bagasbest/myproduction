@@ -251,6 +251,7 @@ class HerbFragment : Fragment() {
                     "customer2ndAddress" to "" + recAddress2nd,
                     "date" to date,
                     "dateInMillis" to dateInMillis,
+                    "category" to "common",
                 )
 
                 FirebaseFirestore
@@ -308,6 +309,15 @@ class HerbFragment : Fragment() {
                                     recAddress2nd,
                                     totalPrice!!,
                                 )
+                            }
+
+                            /// update customer name for item_history
+                            for (i in poList.indices) {
+                                FirebaseFirestore
+                                    .getInstance()
+                                    .collection("item_history")
+                                    .document(poList[i].uid!!)
+                                    .update("customerName", name)
                             }
                         } else {
                             pb.visibility = View.GONE

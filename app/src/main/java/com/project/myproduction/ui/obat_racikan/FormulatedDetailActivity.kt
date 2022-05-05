@@ -1,6 +1,7 @@
 package com.project.myproduction.ui.obat_racikan
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -26,6 +27,7 @@ class FormulatedDetailActivity : AppCompatActivity() {
     private var name: String? = null
     private var userId: String? = null
     private val formulatedQtyList = ArrayList<Long>()
+    private var poId: String? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +63,20 @@ class FormulatedDetailActivity : AppCompatActivity() {
         }
 
         binding?.addProductBtn?.setOnClickListener {
+            checkIsSalesAlreadyAddProductOrNot()
+        }
+    }
+
+    private fun checkIsSalesAlreadyAddProductOrNot() {
+        val prefs = getSharedPreferences(
+            "formulated", Context.MODE_PRIVATE
+        )
+
+        val isSalesAlreadyAddProduct = prefs.getBoolean("isAdd", false)
+        if(!isSalesAlreadyAddProduct) {
             formValidation()
+        } else {
+            Toast.makeText(this, "Silahkan konformasi PO obat racikan terlebih dahulu pada menu PO, sebelum anda membuat PO lagi", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -101,10 +116,10 @@ class FormulatedDetailActivity : AppCompatActivity() {
 
             Handler().postDelayed({
                 if (stockCounter == 0) {
-                    val uid = System.currentTimeMillis().toString()
+                    poId = System.currentTimeMillis().toString()
 
                     val data = mapOf(
-                        "uid" to uid,
+                        "uid" to poId,
                         "name" to model?.name,
                         "nameTemp" to model?.name?.lowercase(Locale.getDefault()),
                         "code" to model?.code,
@@ -115,6 +130,7 @@ class FormulatedDetailActivity : AppCompatActivity() {
                         "salesId" to userId,
                         "productId" to model?.uid,
                         "materialId" to materialList,
+                        "material" to model?.material,
                         "formulatedQty" to formulatedQtyList,
                         "category" to "formulated"
                     )
@@ -122,7 +138,7 @@ class FormulatedDetailActivity : AppCompatActivity() {
                     FirebaseFirestore
                         .getInstance()
                         .collection("purchase_order")
-                        .document(uid)
+                        .document(poId!!)
                         .set(data)
                         .addOnCompleteListener {
                             if (it.isSuccessful) {
@@ -165,13 +181,12 @@ class FormulatedDetailActivity : AppCompatActivity() {
     private fun outgoingStock(qtyProduct: Long) {
 
         /// outgoing stock
-        val uid = System.currentTimeMillis().toString()
         val calendar = Calendar.getInstance()
         val sdf2 = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val outgoingDate = sdf2.format(calendar.time)
 
         val data = mapOf(
-            "uid" to uid,
+            "uid" to poId,
             "status" to "Outgoing",
             "stock" to qtyProduct,
             "date" to outgoingDate,
@@ -180,7 +195,7 @@ class FormulatedDetailActivity : AppCompatActivity() {
         FirebaseFirestore
             .getInstance()
             .collection("item_history")
-            .document(uid)
+            .document(poId!!)
             .set(data)
             .addOnCompleteListener {
                 if(it.isSuccessful) {
@@ -268,6 +283,11 @@ class FormulatedDetailActivity : AppCompatActivity() {
             .setMessage("Silahkan cek menu PO untuk melakukan purchase order")
             .setIcon(R.drawable.ic_baseline_check_circle_outline_24)
             .setPositiveButton("OK") { dialogInterface, _ ->
+
+                val prefs = getSharedPreferences(
+                    "formulated", Context.MODE_PRIVATE
+                )
+                prefs.edit().putBoolean("isAdd", true).apply()
                 dialogInterface.dismiss()
                 onBackPressed()
             }

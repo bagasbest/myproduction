@@ -26,6 +26,7 @@ class ItemHistoryViewModel : ViewModel() {
                         model.uid = document.data["uid"].toString()
                         model.date = document.data["date"].toString()
                         model.status = document.data["status"].toString()
+                        model.customerName = "" + document.data["customerName"]
                         model.stock = document.data["stock"] as Long
 
                         listData.add(model)

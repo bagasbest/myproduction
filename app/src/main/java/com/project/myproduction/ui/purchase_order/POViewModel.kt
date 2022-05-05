@@ -73,6 +73,7 @@ class POViewModel : ViewModel() {
                         model.materialId = document.data["materialId"] as ArrayList<String>
                         model.category = document.data["category"].toString()
                         model.formulatedQty = document.data["formulatedQty"] as ArrayList<Long>
+                        model.material = document.toObject(POModel::class.java).material
 
                         listData.add(model)
                     }
