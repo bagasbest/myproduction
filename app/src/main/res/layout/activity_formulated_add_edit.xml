@@ -113,10 +113,43 @@
                 android:layout_marginTop="16dp"
                 android:text="Komposisi" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Silahkan pilih komposisi racikan dari 2 pilihan berikut:" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bahan Baku"
+                    android:layout_weight="1"
+                    android:id="@+id/materialBtn"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="16dp"
+                    android:textAllCaps="false"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Obat Umum"
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
+                    android:id="@+id/commonBtn"
+                    android:layout_marginTop="16dp"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
+
 
             <com.toptoche.searchablespinnerlibrary.SearchableSpinner
                 android:id="@+id/searchable_spinner"
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:hintText="Pilih Bahan Baku" />
@@ -127,13 +160,21 @@
                 android:layout_marginTop="16dp"
                 android:text="List Bahan - Bahan" />
 
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvMaterial"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginTop="16dp"
                 tools:listitem="@layout/item_material" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginTop="16dp"
+                android:text="Silahkan perkisa kembali list bahan diatas sebelum menyimpan racikan ini!." />
+
 
             <ProgressBar
                 android:id="@+id/progressBar"

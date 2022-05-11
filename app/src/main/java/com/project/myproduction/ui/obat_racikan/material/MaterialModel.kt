@@ -12,4 +12,5 @@ data class MaterialModel(
     var price: Long? = 0L,
     var stock: Long? = 0L,
     var qty: Long? = 0L,
+    var collection: String? = null
 ) : Parcelable

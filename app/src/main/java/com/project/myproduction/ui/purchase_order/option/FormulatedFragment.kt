@@ -451,7 +451,7 @@ class FormulatedFragment : Fragment() {
     private fun showSuccessDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Sukses Mengonfirmasi Purchase Order")
-            .setMessage("Selanjutnya, Admin akan melakukan konfirmasi")
+            .setMessage("Struk PO, Invoice sudah dibuat, silahkan cek pada masing - masing menu!")
             .setIcon(R.drawable.ic_baseline_check_circle_outline_24)
             .setPositiveButton("OK") { dialogInterface, _ ->
                 val prefs = activity?.getSharedPreferences(

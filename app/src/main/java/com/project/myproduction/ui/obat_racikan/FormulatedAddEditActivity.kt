@@ -3,11 +3,13 @@ package com.project.myproduction.ui.obat_racikan
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,6 +17,8 @@ import com.project.myproduction.R
 import com.project.myproduction.databinding.ActivityFormulatedAddEditBinding
 import com.project.myproduction.ui.obat_racikan.material.MaterialModel
 import com.project.myproduction.ui.obat_racikan.material.MaterialViewModel
+import com.project.myproduction.ui.obat_umum.HerbsModel
+import com.project.myproduction.ui.obat_umum.HerbsViewModel
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -24,8 +28,10 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
     private var model: FormulatedModel? = null
     private var adapter: FormulatedMaterialAdapter?= null
     private var materialList: List<MaterialModel> = ArrayList()
+    private var herbsList: List<HerbsModel> = ArrayList()
     private var listOfMaterial = ArrayList<MaterialModel>()
     private lateinit var iFirebaseLoadDone: IFirebaseLoadDone
+    private var materialOrCommon = ""
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +40,6 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
         setContentView(binding?.root)
 
         iFirebaseLoadDone = this
-        getAllMaterial()
 
         val option = intent.getStringExtra(OPTION)
         if (option == "add") {
@@ -60,27 +65,62 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
             formValidation(option)
         }
 
+        binding?.materialBtn?.setOnClickListener {
+            materialOrCommon = "material"
+            getAllMaterial()
+            binding?.materialBtn?.backgroundTintList = ContextCompat.getColorStateList(this, android.R.color.holo_green_dark)
+            binding?.commonBtn?.backgroundTintList = ContextCompat.getColorStateList(this, R.color.green)
+            binding?.searchableSpinner?.visibility = View.VISIBLE
+        }
+
+        binding?.commonBtn?.setOnClickListener {
+            materialOrCommon = "common"
+            getAllMaterial()
+            binding?.materialBtn?.backgroundTintList = ContextCompat.getColorStateList(this, R.color.green)
+            binding?.commonBtn?.backgroundTintList = ContextCompat.getColorStateList(this, android.R.color.holo_green_dark)
+            binding?.searchableSpinner?.visibility = View.VISIBLE
+        }
 
         binding?.searchableSpinner?.onItemSelectedListener =
             (object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    val material = materialList[p2]
-                    val name = material.name
-                    val code = material.code
-                    val type = material.type
-                    val uid = material.uid
+                    /// ketika berganti ke bahan umum / racikan ada sedikit kendala dimana otomatis menyimpan index 0
+                    if(materialOrCommon == "material") {
+                        val material = materialList[p2]
+                        val name = material.name
+                        val code = material.code
+                        val type = material.type
+                        val uid = material.uid
 
-                    val model = MaterialModel()
-                    model.name = name
-                    model.uid = uid
-                    model.code = code
-                    model.type = type
+                        val model = MaterialModel()
+                        model.name = name
+                        model.uid = uid
+                        model.code = code
+                        model.type = type
+                        model.collection = "material"
 
-                    listOfMaterial.add(model)
+                        listOfMaterial.add(model)
 
-                   initRecyclerView("add")
+                        initRecyclerView("add")
+                    } else {
+                        val material = herbsList[p2]
+                        val name = material.name
+                        val code = material.code
+                        val type = material.type
+                        val uid = material.uid
+
+                        val model = MaterialModel()
+                        model.name = name
+                        model.uid = uid
+                        model.code = code
+                        model.type = type
+                        model.collection = "common_herbs"
+
+                        listOfMaterial.add(model)
+
+                        initRecyclerView("add")
+                    }
                 }
-
                 override fun onNothingSelected(p0: AdapterView<*>?) {
 
                 }
@@ -186,12 +226,23 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
     }
 
     private fun getAllMaterial() {
-        val viewModel = ViewModelProvider(this)[MaterialViewModel::class.java]
+        if(materialOrCommon == "material") {
+            val viewModel = ViewModelProvider(this)[MaterialViewModel::class.java]
 
-        viewModel.setListMaterial()
-        viewModel.getMaterial().observe(this) { materialList ->
-            if (materialList.size > 0) {
-                iFirebaseLoadDone.onFirebaseLoadSuccess(materialList)
+            viewModel.setListMaterial()
+            viewModel.getMaterial().observe(this) { materialList ->
+                if (materialList.size > 0) {
+                    iFirebaseLoadDone.onFirebaseLoadSuccess(materialList)
+                }
+            }
+        } else {
+            val viewModel = ViewModelProvider(this)[HerbsViewModel::class.java]
+
+            viewModel.setListCommonHerbs()
+            viewModel.getHerbs().observe(this) { herbsList ->
+                if (herbsList.size > 0) {
+                    iFirebaseLoadDone.onFirebaseLoadSuccessCommon(herbsList)
+                }
             }
         }
     }
@@ -248,6 +299,21 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
         val adapter =
             ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, propertyName)
         binding?.searchableSpinner?.adapter = adapter
+    }
+
+    override fun onFirebaseLoadSuccessCommon(property: List<HerbsModel>) {
+        this.herbsList = property
+        val propertyName = getCommonHerbNameList(property)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, propertyName)
+        binding?.searchableSpinner?.adapter = adapter
+    }
+
+    private fun getCommonHerbNameList(property: List<HerbsModel>): List<String> {
+        val result = ArrayList<String>()
+        for (herb in property) {
+            result.add(herb.name!!)
+        }
+        return result
     }
 
     private fun getMaterialNameList(materialList: List<MaterialModel>): List<String> {

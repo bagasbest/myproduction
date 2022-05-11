@@ -92,9 +92,11 @@ class POAdapter(private val poList: ArrayList<POModel>, private val poBtn: Butto
                 val formulatedQty = model.formulatedQty!![index]
                 val result = formulatedQty * model.qty!!
 
+                val collection = model.material!![index].collection!!
+
                 FirebaseFirestore
                     .getInstance()
-                    .collection("material")
+                    .collection(collection)
                     .document(model.materialId!![index])
                     .get()
                     .addOnSuccessListener {
@@ -102,7 +104,7 @@ class POAdapter(private val poList: ArrayList<POModel>, private val poBtn: Butto
 
                         FirebaseFirestore
                             .getInstance()
-                            .collection("material")
+                            .collection(collection)
                             .document(model.materialId!![index])
                             .update("stock", currentStock + result)
                     }

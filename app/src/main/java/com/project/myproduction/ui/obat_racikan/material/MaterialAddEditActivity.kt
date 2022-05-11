@@ -61,10 +61,10 @@ class MaterialAddEditActivity : AppCompatActivity() {
                 price.isEmpty() -> {
                     Toast.makeText(this, "Harga Obat tidak boleh kosong", Toast.LENGTH_SHORT).show()
                 }
-                stock.isEmpty() || stock.toInt() <= 0 -> {
+                stock.isEmpty() || stock.toInt() < 0 -> {
                     Toast.makeText(
                         this,
-                        "Stok Obat tidak boleh kosong, minimal 1 stok",
+                        "Jika stok tidak ada / kosong, silahkan tuliskan 0",
                         Toast.LENGTH_SHORT
                     ).show()
                 }

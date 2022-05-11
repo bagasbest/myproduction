@@ -94,9 +94,11 @@ class FormulatedDetailActivity : AppCompatActivity() {
             for (index in model?.material?.indices!!) {
                 materialList.add(model?.material!![index].uid!!)
                 formulatedQtyList.add(model?.material!![index].qty!!)
+
+                /// collection: material, common_herb
                 FirebaseFirestore
                     .getInstance()
-                    .collection("material")
+                    .collection(model?.material!![index].collection!!)
                     .document(model?.material!![index].uid!!)
                     .get()
                     .addOnSuccessListener {
@@ -156,9 +158,11 @@ class FormulatedDetailActivity : AppCompatActivity() {
 
     private fun cutStock(qty: Long) {
         for (index in model?.material?.indices!!) {
+            /// collection: material, common_herbs
+                val collection = model?.material!![index].collection!!
             FirebaseFirestore
                 .getInstance()
-                .collection("material")
+                .collection(collection)
                 .document(model?.material!![index].uid!!)
                 .get()
                 .addOnSuccessListener {
@@ -167,7 +171,7 @@ class FormulatedDetailActivity : AppCompatActivity() {
                     val result = currentStock - newStock
                     FirebaseFirestore
                         .getInstance()
-                        .collection("material")
+                        .collection(collection)
                         .document(model?.material!![index].uid!!)
                         .update("stock", result)
                 }
