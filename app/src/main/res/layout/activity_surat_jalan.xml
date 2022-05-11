@@ -101,7 +101,7 @@
         android:id="@+id/noData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tidak Ada Item History\nTersedia"
+        android:text="Tidak Ada Surat Jalan\nTersedia"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:visibility="gone"
