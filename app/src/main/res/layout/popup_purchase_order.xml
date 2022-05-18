@@ -48,9 +48,9 @@
                 android:text="* Jika tidak ada nama kustomer dari pencarian diatas, silahkan inputkan data di bawah ini secara manual." />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/et1"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:id="@+id/et1"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp">
 
@@ -66,9 +66,9 @@
 
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/et2"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:id="@+id/et2"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp">
 
@@ -83,10 +83,10 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/et3"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/et3"
                 android:layout_marginTop="16dp">
 
 
@@ -116,7 +116,22 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
+                <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                    android:id="@+id/searchable_spinner2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:hintText="Pilih Kustomer Data" />
+
+                <com.codesgood.views.JustifiedTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16sp"
+                    android:text="* Jika tidak ada nama kustomer dari pencarian diatas, silahkan inputkan data di bawah ini secara manual." />
+
+
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/et4"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -133,6 +148,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/et5"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -150,6 +166,7 @@
 
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/et6"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

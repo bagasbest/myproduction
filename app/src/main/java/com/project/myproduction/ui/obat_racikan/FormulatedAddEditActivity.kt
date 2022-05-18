@@ -32,6 +32,7 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
     private var listOfMaterial = ArrayList<MaterialModel>()
     private lateinit var iFirebaseLoadDone: IFirebaseLoadDone
     private var materialOrCommon = ""
+    private var option: String? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +42,7 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
 
         iFirebaseLoadDone = this
 
-        val option = intent.getStringExtra(OPTION)
+        option = intent.getStringExtra(OPTION)
         if (option == "add") {
             binding?.title?.text = "Buat Racikan Baru"
             binding?.saveBtn?.text = "Simpan Racikan Ini"
@@ -101,7 +102,11 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
 
                         listOfMaterial.add(model)
 
-                        initRecyclerView("add")
+                        if(option == "add") {
+                            initRecyclerView("add")
+                        } else {
+                            initRecyclerView("edit")
+                        }
                     } else {
                         val material = herbsList[p2]
                         val name = material.name
@@ -118,7 +123,11 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
 
                         listOfMaterial.add(model)
 
-                        initRecyclerView("add")
+                        if(option == "add") {
+                            initRecyclerView("add")
+                        } else {
+                            initRecyclerView("edit")
+                        }
                     }
                 }
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -157,7 +166,7 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
 
                     for(idx in listOfMaterial.indices) {
                         if(listOfMaterial[idx].qty == 0L) {
-                            Toast.makeText(this, "Kuantitas bahan baku minimal 1", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Kuantitas bahan baku ''${listOfMaterial[idx].name}'' minimal 1", Toast.LENGTH_SHORT).show()
                             binding?.progressBar?.visibility = View.GONE
                             return
                         }
@@ -191,7 +200,7 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
 
                     for(idx in listOfMaterial.indices) {
                         if(listOfMaterial[idx].qty == 0L) {
-                            Toast.makeText(this, "Kuantitas bahan baku minimal 1", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Kuantitas bahan baku ''${listOfMaterial[idx].name}'' minimal 1", Toast.LENGTH_SHORT).show()
                             binding?.progressBar?.visibility = View.GONE
                             return
                         }

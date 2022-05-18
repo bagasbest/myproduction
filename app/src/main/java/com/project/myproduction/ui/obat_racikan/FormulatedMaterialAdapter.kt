@@ -3,6 +3,7 @@ package com.project.myproduction.ui.obat_racikan
 import android.annotation.SuppressLint
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,7 @@ class FormulatedMaterialAdapter(
     inner class ViewHolder(private val binding: ItemMaterialBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
-        fun bind(model: MaterialModel) {
+        fun bind(model: MaterialModel, position: Int) {
             with(binding) {
 
                 name.text = model.name
@@ -46,24 +47,54 @@ class FormulatedMaterialAdapter(
                             }
 
                             override fun afterTextChanged(query: Editable?) {
-                                if(query.toString().isEmpty()) {
-                                    Toast.makeText(itemView.context, "Kuantitas bahan baku ke ${adapterPosition+1} tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                                if(query.toString().isEmpty() || query.toString().toInt() <= 0) {
+                                    Toast.makeText(itemView.context, "Kuantitas bahan baku ''${model.name}'' tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                                    return
                                 } else {
-                                    materialList!![adapterPosition].qty = query.toString().toLong()
+                                    Log.e("taf", materialList!![position].name!!)
+                                    Log.e("position", position.toString())
+                                    materialList!![position].qty = query.toString().toLong()
                                 }
                             }
                         })
                     }
                     "edit" -> {
                         delete.visibility = View.VISIBLE
+                        qty.isEnabled = true
                         qty.setText(model.qty.toString())
+
+                        qty.addTextChangedListener(object: TextWatcher{
+                            override fun beforeTextChanged(
+                                p0: CharSequence?,
+                                p1: Int,
+                                p2: Int,
+                                p3: Int
+                            ) {
+
+                            }
+
+                            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                            }
+
+                            override fun afterTextChanged(query: Editable?) {
+                                if(query.toString().isEmpty() || query.toString().toInt() <= 0) {
+                                    Toast.makeText(itemView.context, "Kuantitas bahan baku ''${model.name}'' tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                                    return
+                                } else {
+                                    Log.e("taf", materialList!![position].name!!)
+                                    Log.e("position", position.toString())
+                                    materialList!![position].qty = query.toString().toLong()
+                                }
+                            }
+                        })
                     }
                     "detail" -> {
                         qty.setText(model.qty.toString())
                     }
                 }
                 delete.setOnClickListener {
-                    materialList?.removeAt(adapterPosition)
+                    materialList?.removeAt(position)
                     notifyDataSetChanged()
                 }
             }
@@ -78,7 +109,7 @@ class FormulatedMaterialAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(materialList!![position])
+        holder.bind(materialList!![position], position)
     }
 
     override fun getItemCount(): Int = materialList?.size!!

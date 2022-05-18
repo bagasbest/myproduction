@@ -75,7 +75,11 @@ class FormulatedFragment : Fragment() {
         val et1: TextInputLayout
         val et2: TextInputLayout
         val et3: TextInputLayout
+        val et4: TextInputLayout
+        val et5: TextInputLayout
+        val et6: TextInputLayout
         val searchableSpinner: SearchableSpinner
+        val searchableSpinner2: SearchableSpinner
         val confirmBtn: Button
         val address2nd: LinearLayout
         val pb: ProgressBar
@@ -87,6 +91,9 @@ class FormulatedFragment : Fragment() {
         et1 = dialog.findViewById(R.id.et1)
         et2 = dialog.findViewById(R.id.et2)
         et3 = dialog.findViewById(R.id.et3)
+        et4 = dialog.findViewById(R.id.et4)
+        et5 = dialog.findViewById(R.id.et5)
+        et6 = dialog.findViewById(R.id.et6)
         receiverName = dialog.findViewById(R.id.receiverName)
         receiverAddress = dialog.findViewById(R.id.receiverAddress)
         receiverPhone = dialog.findViewById(R.id.phone)
@@ -96,6 +103,7 @@ class FormulatedFragment : Fragment() {
         sendAnotherCb = dialog.findViewById(R.id.sendToAnotherCb)
         address2nd = dialog.findViewById(R.id.address2nd)
         searchableSpinner = dialog.findViewById(R.id.searchable_spinner)
+        searchableSpinner2 = dialog.findViewById(R.id.searchable_spinner2)
 
         val viewModel = ViewModelProvider(this)[CustomerDataViewModel::class.java]
         viewModel.setListCustomerData()
@@ -111,6 +119,7 @@ class FormulatedFragment : Fragment() {
                     propertyName
                 )
                 searchableSpinner.adapter = adapter
+                searchableSpinner2.adapter = adapter
 
                 searchableSpinner?.onItemSelectedListener =
                     (object : AdapterView.OnItemSelectedListener {
@@ -139,6 +148,34 @@ class FormulatedFragment : Fragment() {
                         }
                     })
             }
+
+
+            searchableSpinner2?.onItemSelectedListener =
+                (object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        p0: AdapterView<*>?,
+                        p1: View?,
+                        p2: Int,
+                        p3: Long
+                    ) {
+                        val customer = customerDataList[p2]
+                        val name = customer.name
+                        val phone = customer.phone
+                        val address = customer.address
+
+                        receiverName2nd.setText(name)
+                        receiverPhone2nd.setText(phone)
+                        receiverAddress2nd.setText(address)
+                        et4.isEnabled = false
+                        et5.isEnabled = false
+                        et6.isEnabled = false
+
+                    }
+
+                    override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                    }
+                })
         }
 
         sendAnotherCb.setOnClickListener {
