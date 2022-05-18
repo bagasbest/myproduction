@@ -8,6 +8,7 @@ import kotlinx.parcelize.Parcelize
 data class InvoiceModel(
     var uid: String? = null,
     var date: String? = null,
+    var dateInvoiceId: String? = null,
     var dateInMillis: Long? = 0L,
     var salesName: String? = null,
     var customerName: String? = null,

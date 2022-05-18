@@ -10,6 +10,9 @@ import com.project.myproduction.databinding.ItemTravelDocumentBinding
 import com.project.myproduction.ui.surat_jalan.SuratJalanDetailActivity
 import java.text.DecimalFormat
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class InvoiceAdapter(private val option: String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -24,11 +27,18 @@ class InvoiceAdapter(private val option: String) : RecyclerView.Adapter<Recycler
 
     inner class ViewHolder(private val binding: ItemInvoiceBinding) : RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
-        fun bind(model: InvoiceModel) {
+        fun bind(model: InvoiceModel, position: Int) {
             val format: NumberFormat = DecimalFormat("#,###")
             with(binding) {
 
-                poId.text = "Invoice ID: : ${model.uid}"
+                if(position+1 < 10) {
+                    poId.text = "Invoice ID: : ${model.dateInvoiceId}${String.format("%03d", position+1)}"
+                } else if (position < 100) {
+                    poId.text = "Invoice ID: : ${model.dateInvoiceId}${String.format("%02d", position+1)}"
+                } else if (position < 1000) {
+                    poId.text = "Invoice ID: : ${model.dateInvoiceId}${position+1}"
+                }
+
                 customerName.text = "Kepada Yth: ${model.customerName}"
                 customerPhone.text = "No.Handphone: ${model.customerPhone}"
                 customerAddress.text = "Alamat: ${model.customerAddress}"
@@ -38,6 +48,7 @@ class InvoiceAdapter(private val option: String) : RecyclerView.Adapter<Recycler
                 cv.setOnClickListener {
                     val intent = Intent(itemView.context, InvoiceDetailActivity::class.java)
                     intent.putExtra(InvoiceDetailActivity.EXTRA_DATA, model)
+                    intent.putExtra(InvoiceDetailActivity.POSITION, position)
                     itemView.context.startActivity(intent)
                 }
 
@@ -80,7 +91,7 @@ class InvoiceAdapter(private val option: String) : RecyclerView.Adapter<Recycler
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if(option == "invoice") {
-            (holder as ViewHolder).bind(invoiceList[position])
+            (holder as ViewHolder).bind(invoiceList[position], position)
         } else{
             (holder as ViewHolder2).bind(invoiceList[position])
         }

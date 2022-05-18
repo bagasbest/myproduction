@@ -273,7 +273,10 @@ class HerbFragment : Fragment() {
                 /// order po, yang bisa di lihat admin
                 val calendar = Calendar.getInstance()
                 val sdf = SimpleDateFormat("dd-MMMM-yyyy, HH:mm", Locale.getDefault())
+                val sdf2 = SimpleDateFormat("yyMMdd", Locale.getDefault())
                 date = sdf.format(calendar.time)
+                val dateInvoiceId = sdf2.format(calendar.time)
+
                 dateInMillis = System.currentTimeMillis()
                 val data = mapOf(
                     "uid" to uid,
@@ -333,6 +336,7 @@ class HerbFragment : Fragment() {
                                             phone2nd,
                                             recAddress2nd,
                                             totalPrice!!,
+                                            dateInvoiceId,
                                         )
                                     }
                             } else {
@@ -346,6 +350,7 @@ class HerbFragment : Fragment() {
                                     phone2nd,
                                     recAddress2nd,
                                     totalPrice!!,
+                                    dateInvoiceId
                                 )
                             }
 
@@ -376,7 +381,8 @@ class HerbFragment : Fragment() {
         name2nd: String,
         phone2nd: String,
         recAddress2nd: String,
-        totalPrice: Long
+        totalPrice: Long,
+        dateInvoiceId: String
     ) {
         /// buat invoice
         val invoiceId =
@@ -395,6 +401,7 @@ class HerbFragment : Fragment() {
             "product" to poList,
             "totalPrice" to totalPrice,
             "category" to "common",
+            "dateInvoiceId" to dateInvoiceId,
         )
 
         FirebaseFirestore

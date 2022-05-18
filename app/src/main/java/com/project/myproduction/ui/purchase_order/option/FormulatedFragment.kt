@@ -39,8 +39,6 @@ class FormulatedFragment : Fragment() {
     private var salesId: String? = null
     private var poList = ArrayList<POModel>()
     private var totalPrice: Long? = 0L
-    private var formulatedStockResult = ArrayList<ArrayList<Long>>()
-    private var stockResult = ArrayList<Long>()
     private var date: String? = null
     private var dateInMillis: Long = 0L
 
@@ -274,100 +272,106 @@ class FormulatedFragment : Fragment() {
 
 
             Handler().postDelayed({
-                    val uid = System.currentTimeMillis().toString()
-                    /// order po, yang bisa di lihat admin
-                    val calendar = Calendar.getInstance()
-                    val sdf = SimpleDateFormat("dd-MMMM-yyyy, HH:mm", Locale.getDefault())
-                    date = sdf.format(calendar.time)
-                    dateInMillis = System.currentTimeMillis()
-                    val data = mapOf(
-                        "uid" to uid,
-                        "product" to poList,
-                        "totalPrice" to totalPrice,
-                        "salesName" to salesName,
-                        "salesId" to salesId,
-                        "customerName" to name,
-                        "customerPhone" to phone,
-                        "customerAddress" to address,
-                        "customer2ndName" to "" + name2nd,
-                        "customer2ndPhone" to "" + phone2nd,
-                        "customer2ndAddress" to "" + recAddress2nd,
-                        "date" to date,
-                        "dateInMillis" to dateInMillis,
-                        "category" to "formulated",
-                    )
+                val uid = System.currentTimeMillis().toString()
+                /// order po, yang bisa di lihat admin
+                val calendar = Calendar.getInstance()
+                val sdf = SimpleDateFormat("dd-MMMM-yyyy, HH:mm", Locale.getDefault())
+                val sdf2 = SimpleDateFormat("yyMMdd", Locale.getDefault())
+                val dateInvoiceId = sdf2.format(calendar.time)
+                date = sdf.format(calendar.time)
+                dateInMillis = System.currentTimeMillis()
 
-                    FirebaseFirestore
-                        .getInstance()
-                        .collection("order")
-                        .document(uid)
-                        .set(data)
-                        .addOnCompleteListener {
-                            if (it.isSuccessful) {
 
-                                for (i in poList.indices) {
-                                    FirebaseFirestore
-                                        .getInstance()
-                                        .collection("purchase_order")
-                                        .document(poList[i].uid!!)
-                                        .delete()
-                                }
+                val data = mapOf(
+                    "uid" to uid,
+                    "product" to poList,
+                    "totalPrice" to totalPrice,
+                    "salesName" to salesName,
+                    "salesId" to salesId,
+                    "customerName" to name,
+                    "customerPhone" to phone,
+                    "customerAddress" to address,
+                    "customer2ndName" to "" + name2nd,
+                    "customer2ndPhone" to "" + phone2nd,
+                    "customer2ndAddress" to "" + recAddress2nd,
+                    "date" to date,
+                    "dateInMillis" to dateInMillis,
+                    "category" to "formulated",
+                )
 
-                                if(et1.isEnabled) {
-                                    /// customer data
-                                    val customerData = mapOf(
-                                        "uid" to uid,
-                                        "name" to name,
-                                        "phone" to phone,
-                                        "address" to address,
-                                    )
+                FirebaseFirestore
+                    .getInstance()
+                    .collection("order")
+                    .document(uid)
+                    .set(data)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
 
-                                    FirebaseFirestore
-                                        .getInstance()
-                                        .collection("customer_data")
-                                        .document(uid)
-                                        .set(customerData)
-                                        .addOnCompleteListener {
-                                            createInvoice(
-                                                pb,
-                                                dialog,
-                                                name,
-                                                phone,
-                                                address,
-                                                name2nd,
-                                                phone2nd,
-                                                recAddress2nd,
-                                                totalPrice!!,
-                                            )
-                                        }
-                                } else {
-                                    createInvoice(
-                                        pb,
-                                        dialog,
-                                        name,
-                                        phone,
-                                        address,
-                                        name2nd,
-                                        phone2nd,
-                                        recAddress2nd,
-                                        totalPrice!!,
-                                    )
-                                }
-
-                                /// update customer name for item_history
-                                for(i in poList.indices) {
-                                    FirebaseFirestore
-                                        .getInstance()
-                                        .collection("item_history")
-                                        .document(poList[i].uid!!)
-                                        .update("customerName", name)
-                                }
-                            } else {
-                                pb.visibility = View.GONE
-                                dialog.dismiss()
-                                showFailureDialog()
+                            for (i in poList.indices) {
+                                FirebaseFirestore
+                                    .getInstance()
+                                    .collection("purchase_order")
+                                    .document(poList[i].uid!!)
+                                    .delete()
                             }
+
+                            if (et1.isEnabled) {
+                                /// customer data
+                                val customerData = mapOf(
+                                    "uid" to uid,
+                                    "name" to name,
+                                    "phone" to phone,
+                                    "address" to address,
+                                )
+
+                                FirebaseFirestore
+                                    .getInstance()
+                                    .collection("customer_data")
+                                    .document(uid)
+                                    .set(customerData)
+                                    .addOnCompleteListener {
+                                        createInvoice(
+                                            pb,
+                                            dialog,
+                                            name,
+                                            phone,
+                                            address,
+                                            name2nd,
+                                            phone2nd,
+                                            recAddress2nd,
+                                            totalPrice!!,
+                                            dateInvoiceId,
+                                        )
+                                    }
+                            } else {
+                                createInvoice(
+                                    pb,
+                                    dialog,
+                                    name,
+                                    phone,
+                                    address,
+                                    name2nd,
+                                    phone2nd,
+                                    recAddress2nd,
+                                    totalPrice!!,
+                                    dateInvoiceId,
+                                )
+                            }
+
+                            /// update customer name for item_history
+                            for (i in poList.indices) {
+                                FirebaseFirestore
+                                    .getInstance()
+                                    .collection("item_history")
+                                    .document(poList[i].uid!!)
+                                    .update("customerName", name)
+                            }
+                        } else {
+                            pb.visibility = View.GONE
+                            dialog.dismiss()
+                            showFailureDialog()
                         }
+                    }
             }, 1500)
         }
     }
@@ -381,7 +385,8 @@ class FormulatedFragment : Fragment() {
         name2nd: String,
         phone2nd: String,
         recAddress2nd: String,
-        totalPrice: Long
+        totalPrice: Long,
+        dateInvoiceId: String
     ) {
         /// buat invoice
         val invoiceId =
@@ -400,6 +405,7 @@ class FormulatedFragment : Fragment() {
             "product" to poList,
             "totalPrice" to totalPrice,
             "category" to "formulated",
+            "dateInvoiceId" to dateInvoiceId,
         )
 
         FirebaseFirestore

@@ -52,7 +52,14 @@ class InvoiceDetailActivity : AppCompatActivity() {
         binding?.customerName?.text = "Kepada Yth: ${model?.customerName}"
         binding?.customerPhone?.text = "No.Handphone: ${model?.customerPhone}"
         binding?.customerAddress?.text = "Alamat: ${model?.customerAddress}"
-        binding?.invoiceId?.text = "INVOICE ID: INV-${model?.uid}"
+        val position = intent.getIntExtra(POSITION, 0)
+        if(position+1 < 10) {
+            binding?.invoiceId?.text = "INVOICE ID: ${model?.dateInvoiceId}${String.format("%03d", position+1)}"
+        } else if (position+1 < 100) {
+            binding?.invoiceId?.text = "INVOICE ID: ${model?.dateInvoiceId}${String.format("%02d", position+1)}"
+        } else {
+            binding?.invoiceId?.text = "INVOICE ID: ${model?.dateInvoiceId}${position+1}"
+        }
         binding?.salesName?.text = "Nama Sales: ${model?.salesName}"
 
         if(model?.category == "common") {
@@ -176,7 +183,14 @@ class InvoiceDetailActivity : AppCompatActivity() {
             )
 
             addNewItem(document, "INVOICE ID:", Element.ALIGN_LEFT, headingStyle)
-            addNewItem(document, "INV-"+model?.uid!!, Element.ALIGN_LEFT, valueStyle)
+            val position = intent.getIntExtra(POSITION, 0)
+            if(position+1 < 10) {
+                addNewItem(document, "${model?.dateInvoiceId}${String.format("%03d", position+1)}", Element.ALIGN_LEFT, valueStyle)
+            } else if (position+1 < 100) {
+                addNewItem(document, "${model?.dateInvoiceId}${String.format("%02d", position+1)}", Element.ALIGN_LEFT, valueStyle)
+            } else {
+                addNewItem(document, "${model?.dateInvoiceId}${position+1}", Element.ALIGN_LEFT, valueStyle)
+            }
 
             addLineSeparator(document)
             if(model?.category == "formulated") {
@@ -346,5 +360,6 @@ class InvoiceDetailActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_DATA = "data"
+        const val POSITION = "position"
     }
 }
