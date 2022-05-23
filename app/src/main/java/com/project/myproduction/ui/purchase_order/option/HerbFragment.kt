@@ -402,6 +402,11 @@ class HerbFragment : Fragment() {
             "totalPrice" to totalPrice,
             "category" to "common",
             "dateInvoiceId" to dateInvoiceId,
+            "discount" to 0,
+            "ppn" to 0,
+            "paymentType" to "",
+            "paymentDate" to "",
+            "paymentStatus" to "Belum Bayar",
         )
 
         FirebaseFirestore

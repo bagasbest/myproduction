@@ -3,7 +3,9 @@ package com.project.myproduction.ui.invoice
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.project.myproduction.databinding.ItemInvoiceBinding
 import com.project.myproduction.databinding.ItemTravelDocumentBinding
@@ -44,6 +46,17 @@ class InvoiceAdapter(private val option: String) : RecyclerView.Adapter<Recycler
                 customerAddress.text = "Alamat: ${model.customerAddress}"
                 totalPrice.text = "Sub Total: Rp.${format.format(model.totalPrice)}"
 
+                when (model.paymentStatus) {
+                    "Belum Bayar" -> {
+                        paymentStatus.backgroundTintList = ContextCompat.getColorStateList(itemView.context, android.R.color.holo_red_light)
+                    }
+                    "Pembayaran Full" -> {
+                        paymentStatus.backgroundTintList = ContextCompat.getColorStateList(itemView.context, android.R.color.holo_green_dark)
+                    }
+                    "Pembayaran Sebagian" -> {
+                        paymentStatus.backgroundTintList = ContextCompat.getColorStateList(itemView.context, android.R.color.holo_orange_dark)
+                    }
+                }
 
                 cv.setOnClickListener {
                     val intent = Intent(itemView.context, InvoiceDetailActivity::class.java)

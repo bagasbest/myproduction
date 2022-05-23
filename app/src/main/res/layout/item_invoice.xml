@@ -16,11 +16,21 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
+        <View
+            android:id="@+id/paymentStatus"
+            android:layout_width="5dp"
+            android:layout_height="100dp"
+            android:background="@android:color/holo_red_light"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/poId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Invoice ID: "
+            android:layout_marginStart="16dp"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -32,6 +42,7 @@
             android:id="@+id/customerName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:text="Kepada Yth: "
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poId" />
@@ -40,14 +51,16 @@
             android:id="@+id/customerPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:text="No.Handphone: "
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/customerName" />
 
         <TextView
             android:id="@+id/customerAddress"
-            android:layout_width="47dp"
-            android:layout_height="22dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:text="Alamat: "
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/customerPhone" />
@@ -57,6 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sub Total: Rp.0"
+            android:layout_marginStart="16dp"
             android:textStyle="bold"
             android:layout_marginTop="10dp"
             android:textColor="@android:color/holo_red_dark"

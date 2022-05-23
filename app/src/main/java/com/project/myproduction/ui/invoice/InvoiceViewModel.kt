@@ -35,6 +35,11 @@ class InvoiceViewModel : ViewModel() {
                         model.date = document.data["date"].toString()
                         model.dateInvoiceId = document.data["dateInvoiceId"].toString()
                         model.category = document.data["category"].toString()
+                        model.discount = document.data["discount"] as Long
+                        model.ppn = document.data["ppn"] as Long
+                        model.paymentType = document.data["paymentType"].toString()
+                        model.paymentDate = document.data["paymentDate"].toString()
+                        model.paymentStatus = document.data["paymentStatus"].toString()
                         model.dateInMillis = document.data["dateInMillis"] as Long
                         model.product = document.toObject(InvoiceModel::class.java).product
 
@@ -75,6 +80,11 @@ class InvoiceViewModel : ViewModel() {
                         model.date = document.data["date"].toString()
                         model.dateInvoiceId = document.data["dateInvoiceId"].toString()
                         model.category = document.data["category"].toString()
+                        model.discount = document.data["discount"] as Long
+                        model.ppn = document.data["ppn"] as Long
+                        model.paymentType = document.data["paymentType"].toString()
+                        model.paymentDate = document.data["paymentDate"].toString()
+                        model.paymentStatus = document.data["paymentStatus"].toString()
                         model.dateInMillis = document.data["dateInMillis"] as Long
                         model.product = document.toObject(InvoiceModel::class.java).product
 

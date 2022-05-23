@@ -18,6 +18,11 @@ data class InvoiceModel(
     var customer2ndPhone: String? = null,
     var customer2ndAddress: String? = null,
     var category: String? = null,
+    var discount: Long? = 0L,
+    var ppn: Long? = 0L,
+    var paymentType: String? = null,
+    var paymentDate: String? = null,
+    var paymentStatus: String? = null,
     var product: ArrayList<POModel>? = null,
     var totalPrice: Long? = 0L,
 ) : Parcelable

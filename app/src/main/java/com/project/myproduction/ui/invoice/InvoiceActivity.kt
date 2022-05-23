@@ -17,14 +17,18 @@ class InvoiceActivity : AppCompatActivity() {
     private var adapter: InvoiceAdapter? = null
     private var from: Long? = 0L
     private var to: Long? = 0L
+    private var option = "all"
+
+    override fun onResume() {
+        super.onResume()
+        initRecyclerView()
+        initViewModel(option)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInvoiceBinding.inflate(layoutInflater)
         setContentView(binding?.root)
-
-        initRecyclerView()
-        initViewModel("all")
 
         binding?.backButton?.setOnClickListener {
             onBackPressed()
@@ -57,8 +61,9 @@ class InvoiceActivity : AppCompatActivity() {
 
         binding?.filter?.setOnClickListener {
             if(from != 0L && to != 0L) {
+                option = "filter"
                 initRecyclerView()
-                initViewModel("filter")
+                initViewModel(option)
             } else {
                 Toast.makeText(this, "Anda harus menginputkan tanggal awal - tanggal akhir", Toast.LENGTH_SHORT).show()
             }

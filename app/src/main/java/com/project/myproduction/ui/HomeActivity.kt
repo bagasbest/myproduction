@@ -38,6 +38,10 @@ class HomeActivity : AppCompatActivity() {
 
         initView()
 
+        Glide.with(this)
+            .load(R.drawable.banner)
+            .into(binding!!.iconApp)
+
         binding?.settingBtn?.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             intent.putExtra(SettingsActivity.ROLE, role)
