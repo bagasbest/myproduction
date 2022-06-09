@@ -41,6 +41,13 @@ class SuratJalanDetailActivity : AppCompatActivity() {
     private var model: InvoiceModel? = null
     private var totalPrice = 0L
     private val fileName: String = "surat_jalan.pdf"
+    private var realFileName = ""
+    private var invoiceId = ""
+    private var dateFix = ""
+    private var ppn: Double = 0.0
+    private var discount: Double = 0.0
+    private var finalPriceWithDiscountAndPpn = 0.0
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +61,22 @@ class SuratJalanDetailActivity : AppCompatActivity() {
         binding?.customerName?.text = "Kepada Yth: ${model?.customerName}"
         binding?.customerPhone?.text = "No.Handphone: ${model?.customerPhone}"
         binding?.customerAddress?.text = "Alamat: ${model?.customerAddress}"
+        discount = model?.discount?.toDouble()!!
+        ppn = model?.ppn?.toDouble()!!
+        binding?.discPrice?.text = discount.toInt().toString()
+        binding?.ppnPrice?.text = ppn.toInt().toString()
+
+        val position = intent.getIntExtra(InvoiceDetailActivity.POSITION, 0)
+        invoiceId = if(position+1 < 10) {
+            "${model?.dateInvoiceId}${String.format("%03d", position+1)}"
+        } else if (position+1 < 100) {
+            "${model?.dateInvoiceId}${String.format("%02d", position+1)}"
+        } else {
+            "${model?.dateInvoiceId}${position+1}"
+        }
+
+        dateFix = model?.date?.substring(0, model?.date!!.length-7).toString()
+        realFileName = "${model?.customerName} $dateFix $invoiceId"
 
         if(model?.category == "common") {
             binding?.rvCommon?.visibility = View.VISIBLE
@@ -77,8 +100,15 @@ class SuratJalanDetailActivity : AppCompatActivity() {
         for(i in model?.product!!.indices) {
             totalPrice += model?.product!![i].price!!
         }
+
+        val discPrice = (discount / 100) * totalPrice
+        val ppnPrice = (ppn / 100)
         val format: NumberFormat = DecimalFormat("#,###")
-        binding?.totalPrice?.text = "Total Biaya: Rp.${format.format(totalPrice)}"
+
+        binding?.discPrice?.text = "Diskon: ${discount.toLong()}%"
+        binding?.ppnPrice?.text ="PPN: ${ppn.toLong()}%"
+        finalPriceWithDiscountAndPpn = (totalPrice - discPrice) * ppnPrice
+        binding?.totalPrice?.text = "Total Biaya: Rp.${format.format((totalPrice - discPrice.toLong()) + finalPriceWithDiscountAndPpn)}"
 
 
         Dexter.withContext(this)
@@ -149,7 +179,7 @@ class SuratJalanDetailActivity : AppCompatActivity() {
             addLineSpace(document)
 
             addNewItem(document, "Keterangan:", Element.ALIGN_LEFT, headingStyle)
-            addNewItem(document, "Tanggal: ${model?.date}", Element.ALIGN_LEFT, valueStyle)
+            addNewItem(document, "Tanggal: $dateFix", Element.ALIGN_LEFT, valueStyle)
             addNewItem(document, "Kepada Yth: ${model?.customerName}", Element.ALIGN_LEFT, valueStyle)
             addNewItem(document, "No.Handphone: ${model?.customerPhone}", Element.ALIGN_LEFT, valueStyle)
             addNewItem(document, "Alamat: ${model?.customerAddress}", Element.ALIGN_LEFT, valueStyle)
@@ -174,7 +204,7 @@ class SuratJalanDetailActivity : AppCompatActivity() {
             addLineSpace(document)
 
             addNewItem(document, "Keterangan:", Element.ALIGN_LEFT, headingStyle)
-            addNewItem(document, "Tanggal: ${model?.date}", Element.ALIGN_LEFT, valueStyle)
+            addNewItem(document, "Tanggal: $dateFix", Element.ALIGN_LEFT, valueStyle)
             addNewItem(document, "Kepada Yth: ${model?.customerName}", Element.ALIGN_LEFT, valueStyle)
             addNewItem(document, "No.Handphone: ${model?.customerPhone}", Element.ALIGN_LEFT, valueStyle)
             addNewItem(document, "Alamat: ${model?.customerAddress}", Element.ALIGN_LEFT, valueStyle)
@@ -254,7 +284,7 @@ class SuratJalanDetailActivity : AppCompatActivity() {
 
             addLineSeparator(document)
             if(model?.category == "formulated") {
-                addNewItem(document, "Kategori: Obat Racikan", Element.ALIGN_LEFT, valueStyle)
+             //   addNewItem(document, "Kategori: Obat Racikan", Element.ALIGN_LEFT, valueStyle)
                 addNewItem(document, "Nama Obat Racikan: ${model?.product!![0].name}", Element.ALIGN_LEFT, valueStyle)
                 addLineSpace(document)
                 addLineSpace(document)
@@ -268,16 +298,15 @@ class SuratJalanDetailActivity : AppCompatActivity() {
                 for(i in model?.product!![0].material!!.indices) {
                     addNewItemWithLeftAndRight(
                         document,
-                        model?.product!![0].material!![i].name!! + " (kode:" + model?.product!![0].material!![i].code + ")",
-                        "${model?.product!![0].material!![i].qty} x ${model?.product!![0].material!![i].type}",
+                        model?.product!![0].material!![i].name!!,
+                        "${model?.product!![0].material!![i].qty} / ${model?.product!![0].material!![i].type}",
                         valueStyle,
                         valueStyle
                     )
                 }
 
             } else {
-                addNewItem(document, "Kategori: Obat Umum", Element.ALIGN_LEFT, valueStyle)
-                val format: NumberFormat = DecimalFormat("#,###")
+            //    addNewItem(document, "Kategori: Obat Umum", Element.ALIGN_LEFT, valueStyle)
                 addNewItem(document, "Detail Order", Element.ALIGN_CENTER, titleStyle)
                 addLineSpace(document)
                 addLineSpace(document)
@@ -285,8 +314,8 @@ class SuratJalanDetailActivity : AppCompatActivity() {
                 for(i in model?.product!!.indices) {
                     addNewItemWithLeftAndRight(
                         document,
-                        model?.product!![i].name!! + " (kode:" + model?.product!![i].code + ")",
-                        "${model?.product!![i].qty} pcs, Rp.${format.format(model?.product!![i].price)}",
+                        model?.product!![i].name!!,
+                        "${model?.product!![i].qty}, Rp.${format.format(model?.product!![i].price)}",
                         valueStyle,
                         valueStyle
                     )
@@ -295,7 +324,9 @@ class SuratJalanDetailActivity : AppCompatActivity() {
 
 
             addLineSeparator(document)
-            addNewItem(document, "Total Biaya: Rp.${format.format(model?.totalPrice)}", Element.ALIGN_CENTER, titleStyle)
+            addNewItem(document, "${binding?.discPrice?.text}", Element.ALIGN_CENTER, valueStyle)
+            addNewItem(document, "${binding?.ppnPrice?.text}", Element.ALIGN_CENTER, valueStyle)
+            addNewItem(document, "${binding?.totalPrice?.text}", Element.ALIGN_CENTER, valueStyle)
             addLineSeparator(document)
 
             addLineSpace(document)
@@ -336,7 +367,11 @@ class SuratJalanDetailActivity : AppCompatActivity() {
     private fun printPDF() {
         val printerManager = getSystemService(Context.PRINT_SERVICE) as PrintManager
         try {
-            val printAdapter = PdfDocumentAdapter(this, Common.getAppPath(this)+fileName)
+            val printAdapter = PdfDocumentAdapter(
+                this,
+                Common.getAppPath(this)+fileName,
+                realFileName
+            )
             printerManager.print("Document", printAdapter, PrintAttributes.Builder().build())
         } catch (e: Exception) {
             Log.e("PO Print Error", "" + e.message)

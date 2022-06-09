@@ -114,6 +114,7 @@ class HerbsDetailActivity : AppCompatActivity() {
                     val calendar = Calendar.getInstance()
                     val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                     val date = sdf.format(calendar.time)
+                    val dateInMillis = Date().time
 
                     val uid = System.currentTimeMillis().toString()
                     val data = mapOf(
@@ -121,6 +122,12 @@ class HerbsDetailActivity : AppCompatActivity() {
                         "stock" to stock.toLong(),
                         "status" to "Stock-taking",
                         "date" to date,
+                        "dateInMillis" to dateInMillis,
+                        "productName" to model?.name,
+                        "productId" to model?.uid,
+                        "productCode" to model?.code,
+                        "productType" to model?.type,
+                        "customerName" to "Stock-taking",
                     )
 
                     FirebaseFirestore
@@ -243,12 +250,20 @@ class HerbsDetailActivity : AppCompatActivity() {
         val calendar = Calendar.getInstance()
         val sdf2 = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val outgoingDate = sdf2.format(calendar.time)
+        val dateInMillis = Date().time
 
+        val uid = System.currentTimeMillis().toString()
         val data = mapOf(
-            "uid" to poId,
-            "status" to "Outgoing",
+            "uid" to uid,
             "stock" to qtyProduct,
+            "status" to "Outgoing",
             "date" to outgoingDate,
+            "dateInMillis" to dateInMillis,
+            "productName" to model?.name,
+            "productId" to model?.uid,
+            "productCode" to model?.code,
+            "productType" to model?.type,
+            "customerName" to "Outgoing",
         )
 
         FirebaseFirestore
@@ -314,13 +329,20 @@ class HerbsDetailActivity : AppCompatActivity() {
         val calendar = Calendar.getInstance()
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val date = sdf.format(calendar.time)
+        val dateInMillis = Date().time
+
         val data = mapOf(
             "uid" to uid,
+            "stock" to stock.toLong(),
             "status" to "Incoming",
             "date" to date,
-            "stock" to stock.toLong(),
+            "dateInMillis" to dateInMillis,
+            "productName" to model?.name,
+            "productId" to model?.uid,
+            "productCode" to model?.code,
+            "productType" to model?.type,
+            "customerName" to "Incoming",
         )
-
         FirebaseFirestore
             .getInstance()
             .collection("item_history")

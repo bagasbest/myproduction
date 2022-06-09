@@ -40,6 +40,8 @@ class OrderDetailActivity : AppCompatActivity() {
     private var adapter2: OrderPOAdapter2? = null
 
     private val fileName: String = "purchase_order.pdf"
+    private var realFileName: String = ""
+    private var dateFix = ""
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +74,9 @@ class OrderDetailActivity : AppCompatActivity() {
         binding?.salesName?.text = "Diajukan Oleh\n\n${model?.salesName}"
         binding?.tanggal?.text = "Tanggal: ${model?.date}"
 
+        dateFix = model?.date?.substring(0, model?.date!!.length-7).toString()
+        realFileName = "${model?.customerName} $dateFix PO:${model?.uid}"
+
         binding?.backButton?.setOnClickListener {
             onBackPressed()
         }
@@ -85,7 +90,8 @@ class OrderDetailActivity : AppCompatActivity() {
             .withListener(object : PermissionListener {
                 override fun onPermissionGranted(response: PermissionGrantedResponse?) {
                     binding?.print?.setOnClickListener {
-                        createPDFFile(Common.getAppPath(this@OrderDetailActivity) + fileName)
+                       createPDFFile(Common.getAppPath(this@OrderDetailActivity) + fileName)
+                        ///createPDFFile("/storage/emulated/0/Download/$fileName")
                     }
                 }
 
@@ -111,6 +117,8 @@ class OrderDetailActivity : AppCompatActivity() {
         if (File(path).exists()) {
             File(path).delete()
         }
+        Log.e("tag", path)
+
         try {
             val document = Document()
             /// save
@@ -146,9 +154,9 @@ class OrderDetailActivity : AppCompatActivity() {
             addLineSeparator(document)
 
             addNewItem(document, "Tanggal:", Element.ALIGN_LEFT, headingStyle)
-            addNewItem(document, model?.date!!, Element.ALIGN_LEFT, valueStyle)
+            addNewItem(document, dateFix, Element.ALIGN_LEFT, valueStyle)
             if(model?.category == "formulated") {
-                addNewItem(document, "Kategori: Obat Racikan", Element.ALIGN_LEFT, valueStyle)
+               // addNewItem(document, "Kategori: Obat Racikan", Element.ALIGN_LEFT, valueStyle)
                 addNewItem(document, "Nama Obat Racikan: ${model?.product!![0].name}", Element.ALIGN_LEFT, valueStyle)
                 val format: NumberFormat = DecimalFormat("#,###")
                 addNewItem(document, "Harga: Rp.${format.format(model?.product!![0].price)}", Element.ALIGN_LEFT, valueStyle)
@@ -161,15 +169,15 @@ class OrderDetailActivity : AppCompatActivity() {
                 for(i in model?.product!![0].material!!.indices) {
                     addNewItemWithLeftAndRight(
                         document,
-                        model?.product!![0].material!![i].name!! + " (kode:" + model?.product!![0].material!![i].code + ")",
-                        "${model?.product!![0].material!![i].qty} x ${model?.product!![0].material!![i].type}",
+                        model?.product!![0].material!![i].name!!,
+                        "${model?.product!![0].material!![i].qty} / ${model?.product!![0].material!![i].type}",
                         valueStyle,
                         valueStyle
                     )
                 }
 
             } else {
-                addNewItem(document, "Kategori: Obat Umum", Element.ALIGN_LEFT, valueStyle)
+               // addNewItem(document, "Kategori: Obat Umum", Element.ALIGN_LEFT, valueStyle)
                 val format: NumberFormat = DecimalFormat("#,###")
                 addNewItem(document, "Detail Order", Element.ALIGN_CENTER, titleStyle)
                 addLineSpace(document)
@@ -178,8 +186,8 @@ class OrderDetailActivity : AppCompatActivity() {
                 for(i in model?.product!!.indices) {
                     addNewItemWithLeftAndRight(
                         document,
-                        model?.product!![i].name!! + " (kode:" + model?.product!![i].code + ")",
-                        "${model?.product!![i].qty} pcs, Rp.${format.format(model?.product!![i].price)}",
+                        model?.product!![i].name!!,
+                        "${model?.product!![i].qty}, Rp.${format.format(model?.product!![i].price)}",
                         valueStyle,
                         valueStyle
                     )
@@ -225,7 +233,7 @@ class OrderDetailActivity : AppCompatActivity() {
     private fun printPDF() {
         val printerManager = getSystemService(Context.PRINT_SERVICE) as PrintManager
         try {
-            val printAdapter = PdfDocumentAdapter(this, Common.getAppPath(this)+fileName)
+            val printAdapter = PdfDocumentAdapter(this, Common.getAppPath(this)+fileName, realFileName)
             printerManager.print("Document", printAdapter, PrintAttributes.Builder().build())
         } catch (e: Exception) {
             Log.e("PO Print Error", "" + e.message)

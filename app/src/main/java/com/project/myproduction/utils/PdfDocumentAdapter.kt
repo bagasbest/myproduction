@@ -12,7 +12,7 @@ import android.util.Log
 import java.io.*
 import java.lang.Exception
 
-class PdfDocumentAdapter(context: Context, path: String) : PrintDocumentAdapter() {
+class PdfDocumentAdapter(context: Context, path: String, private val realFileName: String) : PrintDocumentAdapter() {
 
     internal var context : Context? = null
     internal var path = ""
@@ -31,7 +31,7 @@ class PdfDocumentAdapter(context: Context, path: String) : PrintDocumentAdapter(
         if(cancelationSignal!!.isCanceled) {
             layoutResultCallback!!.onLayoutCancelled()
         } else {
-            val builder = PrintDocumentInfo.Builder("file name")
+            val builder = PrintDocumentInfo.Builder(realFileName)
             builder.setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
                 .setPageCount(PrintDocumentInfo.PAGE_COUNT_UNKNOWN)
                 .build()

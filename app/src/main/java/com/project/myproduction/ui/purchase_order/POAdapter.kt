@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +12,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.project.myproduction.databinding.ItemHerbsBinding
+import com.project.myproduction.ui.obat_racikan.material.MaterialModel
 import java.text.DecimalFormat
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class POAdapter(private val poList: ArrayList<POModel>, private val poBtn: Button?) : RecyclerView.Adapter<POAdapter.ViewHolder>() {
 
@@ -61,8 +64,40 @@ class POAdapter(private val poList: ArrayList<POModel>, private val poBtn: Butto
 
     }
 
+    private fun incomingProduct(model: POModel) {
+        val uid = System.currentTimeMillis().toString()
+        val calendar = Calendar.getInstance()
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val date = sdf.format(calendar.time)
+        val dateInMillis = Date().time
+
+        val data = mapOf(
+            "uid" to uid,
+            "stock" to model.qty,
+            "status" to "Incoming",
+            "date" to date,
+            "dateInMillis" to dateInMillis,
+            "productName" to model.name,
+            "productId" to model.uid,
+            "productCode" to model.code,
+            "productType" to model.type,
+            "customerName" to "Incoming",
+        )
+        FirebaseFirestore
+            .getInstance()
+            .collection("item_history")
+            .document(uid)
+            .set(data)
+    }
+
     private fun cutStock(model: POModel, progressDialog: ProgressDialog, context: Context) {
         if(model.category == "common") {
+
+            /// incoming product for delete po
+            incomingProduct(model)
+
+
+            /// return stock to common herb
             FirebaseFirestore
                 .getInstance()
                 .collection("common_herbs")
@@ -108,6 +143,10 @@ class POAdapter(private val poList: ArrayList<POModel>, private val poBtn: Butto
                             .document(model.materialId!![index])
                             .update("stock", currentStock + result)
                     }
+
+                /// incoming product for delete po
+                incomingProductFormulated(model.material!![index], result)
+
             }
 
             val prefs = context.getSharedPreferences(
@@ -120,6 +159,32 @@ class POAdapter(private val poList: ArrayList<POModel>, private val poBtn: Butto
                 Toast.makeText(context, "Berhasil menghapus produk", Toast.LENGTH_SHORT).show()
             }, 3000)
         }
+    }
+
+    private fun incomingProductFormulated(model: MaterialModel, result: Long) {
+        val uid = System.currentTimeMillis().toString()
+        val calendar = Calendar.getInstance()
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val date = sdf.format(calendar.time)
+        val dateInMillis = Date().time
+
+        val data = mapOf(
+            "uid" to uid,
+            "stock" to result,
+            "status" to "Incoming",
+            "date" to date,
+            "dateInMillis" to dateInMillis,
+            "productName" to model.name,
+            "productId" to model.uid,
+            "productCode" to model.code,
+            "productType" to model.type,
+            "customerName" to "Incoming",
+        )
+        FirebaseFirestore
+            .getInstance()
+            .collection("item_history")
+            .document(uid)
+            .set(data)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

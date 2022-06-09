@@ -230,16 +230,38 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/discPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:text="Diskon:"
+            android:textColor="@android:color/holo_red_dark"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/totalPrice"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+
+        <TextView
+            android:id="@+id/ppnPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PPN:"
+            android:textColor="@android:color/holo_red_dark"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/totalPrice"
+            app:layout_constraintTop_toBottomOf="@+id/discPrice" />
+
+
+        <TextView
             android:id="@+id/totalPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="100dp"
             android:text="Total Biaya: Rp."
             android:textColor="@android:color/holo_red_dark"
-            android:layout_marginTop="16dp"
             android:textStyle="bold"
-            android:layout_marginEnd="100dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+            app:layout_constraintTop_toBottomOf="@+id/ppnPrice" />
 
 
         <View

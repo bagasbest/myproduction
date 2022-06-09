@@ -53,7 +53,7 @@ class FormulatedMaterialAdapter(
                                 } else {
                                     Log.e("taf", materialList!![position].name!!)
                                     Log.e("position", position.toString())
-                                    materialList!![position].qty = query.toString().toLong()
+                                    materialList[position].qty = query.toString().toLong()
                                 }
                             }
                         })
@@ -84,7 +84,7 @@ class FormulatedMaterialAdapter(
                                 } else {
                                     Log.e("taf", materialList!![position].name!!)
                                     Log.e("position", position.toString())
-                                    materialList!![position].qty = query.toString().toLong()
+                                    materialList[position].qty = query.toString().toLong()
                                 }
                             }
                         })

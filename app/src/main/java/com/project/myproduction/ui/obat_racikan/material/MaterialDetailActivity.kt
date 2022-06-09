@@ -91,6 +91,7 @@ class MaterialDetailActivity : AppCompatActivity() {
                     val calendar = Calendar.getInstance()
                     val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                     val date = sdf.format(calendar.time)
+                    val dateInMillis = Date().time
 
                     val uid = System.currentTimeMillis().toString()
                     val data = mapOf(
@@ -98,6 +99,12 @@ class MaterialDetailActivity : AppCompatActivity() {
                         "stock" to stock.toLong(),
                         "status" to "Stock-taking",
                         "date" to date,
+                        "dateInMillis" to dateInMillis,
+                        "productName" to model?.name,
+                        "productId" to model?.uid,
+                        "productCode" to model?.code,
+                        "productType" to model?.type,
+                        "customerName" to "Stock-taking",
                     )
 
                     FirebaseFirestore
@@ -194,11 +201,19 @@ class MaterialDetailActivity : AppCompatActivity() {
         val calendar = Calendar.getInstance()
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val date = sdf.format(calendar.time)
+        val dateInMillis = Date().time
+
         val data = mapOf(
             "uid" to uid,
+            "stock" to stock.toLong(),
             "status" to "Incoming",
             "date" to date,
-            "stock" to stock.toLong(),
+            "dateInMillis" to dateInMillis,
+            "productName" to model?.name,
+            "productId" to model?.uid,
+            "productCode" to model?.code,
+            "productType" to model?.type,
+            "customerName" to "Incoming",
         )
 
         FirebaseFirestore

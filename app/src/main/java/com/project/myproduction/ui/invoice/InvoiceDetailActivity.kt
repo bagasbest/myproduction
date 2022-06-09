@@ -17,7 +17,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
 import com.itextpdf.text.*
 import com.itextpdf.text.pdf.BaseFont
@@ -50,10 +49,13 @@ class InvoiceDetailActivity : AppCompatActivity() {
     private var adapter2: OrderPOAdapter2? = null
     private var model: InvoiceModel? = null
     private var totalPrice = 0L
-    private var finalPriceWithDiscountAndPpn = 0L
+    private var finalPriceWithDiscountAndPpn = 0.0
     private val fileName: String = "invoice.pdf"
     private var ppn: Double = 0.0
     private var discount: Double = 0.0
+    private var realFileName = ""
+    private var invoiceId = ""
+    private var dateFix = ""
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,11 +71,14 @@ class InvoiceDetailActivity : AppCompatActivity() {
         binding?.customerAddress?.text = "Alamat: ${model?.customerAddress}"
         val position = intent.getIntExtra(POSITION, 0)
         if(position+1 < 10) {
-            binding?.invoiceId?.text = "INVOICE ID: ${model?.dateInvoiceId}${String.format("%03d", position+1)}"
+            invoiceId = "${model?.dateInvoiceId}${String.format("%03d", position+1)}"
+            binding?.invoiceId?.text = "INVOICE ID: $invoiceId"
         } else if (position+1 < 100) {
-            binding?.invoiceId?.text = "INVOICE ID: ${model?.dateInvoiceId}${String.format("%02d", position+1)}"
+            invoiceId = "${model?.dateInvoiceId}${String.format("%02d", position+1)}"
+            binding?.invoiceId?.text = "INVOICE ID: $invoiceId"
         } else {
-            binding?.invoiceId?.text = "INVOICE ID: ${model?.dateInvoiceId}${position+1}"
+            invoiceId = "${model?.dateInvoiceId}${position+1}"
+            binding?.invoiceId?.text = "INVOICE ID: $invoiceId"
         }
         binding?.salesName?.text = "Nama Sales: ${model?.salesName}"
         binding?.pembayaranAtasNama?.text = "Pembayaran atas nama: ${model?.customerName}"
@@ -81,6 +86,9 @@ class InvoiceDetailActivity : AppCompatActivity() {
         ppn = model?.ppn?.toDouble()!!
         binding?.discount?.setText(discount.toInt().toString())
         binding?.ppn?.setText(ppn.toInt().toString())
+
+        dateFix = model?.date?.substring(0, model?.date!!.length-7).toString()
+        realFileName = "${model?.customerName} $dateFix $invoiceId"
 
         if(model?.category == "common") {
             binding?.category?.text = "Kategori: Obat Umum"
@@ -108,14 +116,13 @@ class InvoiceDetailActivity : AppCompatActivity() {
             totalPrice += model?.product!![i].price!!
         }
         val discPrice = (discount / 100) * totalPrice
-        val ppnPrice = (ppn / 100) * totalPrice
+        val ppnPrice = (ppn / 100)
         val format: NumberFormat = DecimalFormat("#,###")
 
-        binding?.discPrice?.text = "Diskon: - Rp.${format.format(discPrice)}"
-        binding?.ppnPrice?.text ="PPN: + Rp.${format.format(ppnPrice)}"
-        finalPriceWithDiscountAndPpn = totalPrice - discPrice.toLong() + ppnPrice.toLong()
-        binding?.totalPrice?.text = "Total Biaya: Rp.${format.format(finalPriceWithDiscountAndPpn)}"
-
+        binding?.discPrice?.text = "Diskon: ${discount.toLong()}%"
+        binding?.ppnPrice?.text ="PPN: ${ppn.toLong()}%"
+        finalPriceWithDiscountAndPpn = (totalPrice - discPrice) * ppnPrice
+        binding?.totalPrice?.text = "Total Biaya: Rp.${format.format((totalPrice - discPrice.toLong()) + finalPriceWithDiscountAndPpn)}"
 
         Dexter.withContext(this)
             .withPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -166,7 +173,7 @@ class InvoiceDetailActivity : AppCompatActivity() {
             discount = dsc.toDouble()
             ppn = pp.toDouble()
             val discPrice = (discount / 100) * totalPrice
-            val ppnPrice = (ppn / 100) * totalPrice
+            val ppnPrice = (ppn / 100)
             val format: NumberFormat = DecimalFormat("#,###")
 
             val data = mapOf(
@@ -181,10 +188,10 @@ class InvoiceDetailActivity : AppCompatActivity() {
                 .update(data)
                 .addOnCompleteListener {
                     if(it.isSuccessful) {
-                        binding?.discPrice?.text = "Diskon: - Rp.${format.format(discPrice)}"
-                        binding?.ppnPrice?.text ="PPN: + Rp.${format.format(ppnPrice)}"
-                        finalPriceWithDiscountAndPpn = totalPrice - discPrice.toLong() + ppnPrice.toLong()
-                        binding?.totalPrice?.text = "Total Biaya: Rp.${format.format(finalPriceWithDiscountAndPpn)}"
+                        binding?.discPrice?.text = "Diskon: ${discount.toLong()}%"
+                        binding?.ppnPrice?.text ="PPN: ${ppn.toLong()}%"
+                        finalPriceWithDiscountAndPpn = (totalPrice - discPrice) * ppnPrice
+                        binding?.totalPrice?.text = "Total Biaya: Rp.${format.format((totalPrice - discPrice.toLong()) + finalPriceWithDiscountAndPpn)}"
                     }
                 }
         }
@@ -327,7 +334,7 @@ class InvoiceDetailActivity : AppCompatActivity() {
             addNewItemWithLeftAndRight(
                 document,
                 "PT.Primax Asia Link",
-                "Tanggal: ${model?.date}",
+                "Tanggal: $dateFix",
                 valueStyle,
                 valueStyle
             )
@@ -365,8 +372,8 @@ class InvoiceDetailActivity : AppCompatActivity() {
 
             addLineSeparator(document)
             if(model?.category == "formulated") {
-                addNewItem(document, "Kategori: Obat Racikan", Element.ALIGN_LEFT, valueStyle)
-                addNewItem(document, "Status: ${model?.paymentStatus}", Element.ALIGN_LEFT, valueStyle)
+                //addNewItem(document, "Kategori: Obat Racikan", Element.ALIGN_LEFT, valueStyle)
+                //addNewItem(document, "Status: ${model?.paymentStatus}", Element.ALIGN_LEFT, valueStyle)
                 addNewItem(document, "Nama Obat Racikan: ${model?.product!![0].name}", Element.ALIGN_LEFT, valueStyle)
                 addNewItem(document, "Nama Sales: ${model?.salesName}", Element.ALIGN_LEFT, valueStyle)
                 addLineSpace(document)
@@ -380,17 +387,16 @@ class InvoiceDetailActivity : AppCompatActivity() {
                 for(i in model?.product!![0].material!!.indices) {
                     addNewItemWithLeftAndRight(
                         document,
-                        model?.product!![0].material!![i].name!! + " (kode:" + model?.product!![0].material!![i].code + ")",
-                        "${model?.product!![0].material!![i].qty} x ${model?.product!![0].material!![i].type}",
+                        model?.product!![0].material!![i].name!!,
+                        "${model?.product!![0].material!![i].qty} / ${model?.product!![0].material!![i].type}",
                         valueStyle,
                         valueStyle
                     )
                 }
 
             } else {
-                addNewItem(document, "Kategori: Obat Umum", Element.ALIGN_LEFT, valueStyle)
-                addNewItem(document, "Status: ${model?.paymentStatus}", Element.ALIGN_LEFT, valueStyle)
-                val format: NumberFormat = DecimalFormat("#,###")
+               // addNewItem(document, "Kategori: Obat Umum", Element.ALIGN_LEFT, valueStyle)
+                // addNewItem(document, "Status: ${model?.paymentStatus}", Element.ALIGN_LEFT, valueStyle)
                 addNewItem(document, "Detail Order", Element.ALIGN_CENTER, titleStyle)
                 addLineSpace(document)
                 addLineSpace(document)
@@ -398,8 +404,8 @@ class InvoiceDetailActivity : AppCompatActivity() {
                 for(i in model?.product!!.indices) {
                     addNewItemWithLeftAndRight(
                         document,
-                        model?.product!![i].name!! + " (kode:" + model?.product!![i].code + ")",
-                        "${model?.product!![i].qty} pcs, Rp.${format.format(model?.product!![i].price)}",
+                        model?.product!![i].name!!,
+                        "${model?.product!![i].qty}, Rp.${format.format(model?.product!![i].price)}",
                         valueStyle,
                         valueStyle
                     )
@@ -410,7 +416,7 @@ class InvoiceDetailActivity : AppCompatActivity() {
             addLineSeparator(document)
             addNewItem(document, "${binding?.discPrice?.text}", Element.ALIGN_CENTER, valueStyle)
             addNewItem(document, "${binding?.ppnPrice?.text}", Element.ALIGN_CENTER, valueStyle)
-            addNewItem(document, "Total Biaya: Rp.${format.format(finalPriceWithDiscountAndPpn)}", Element.ALIGN_CENTER, valueStyle)
+            addNewItem(document, "${binding?.totalPrice?.text}", Element.ALIGN_CENTER, valueStyle)
 
             addLineSeparator(document)
             addLineSpace(document)
@@ -468,7 +474,11 @@ class InvoiceDetailActivity : AppCompatActivity() {
     private fun printPDF() {
         val printerManager = getSystemService(Context.PRINT_SERVICE) as PrintManager
         try {
-            val printAdapter = PdfDocumentAdapter(this, Common.getAppPath(this)+fileName)
+            val printAdapter = PdfDocumentAdapter(
+                this,
+                Common.getAppPath(this)+fileName,
+                realFileName
+            )
             printerManager.print("Document", printAdapter, PrintAttributes.Builder().build())
         } catch (e: Exception) {
             Log.e("PO Print Error", "" + e.message)

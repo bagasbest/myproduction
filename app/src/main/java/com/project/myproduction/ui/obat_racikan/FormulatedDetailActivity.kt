@@ -188,12 +188,20 @@ class FormulatedDetailActivity : AppCompatActivity() {
         val calendar = Calendar.getInstance()
         val sdf2 = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val outgoingDate = sdf2.format(calendar.time)
+        val dateInMillis = Date().time
 
+        val uid = System.currentTimeMillis().toString()
         val data = mapOf(
-            "uid" to poId,
-            "status" to "Outgoing",
+            "uid" to uid,
             "stock" to qtyProduct,
+            "status" to "Outgoing",
             "date" to outgoingDate,
+            "dateInMillis" to dateInMillis,
+            "productName" to model?.name,
+            "productId" to model?.uid,
+            "productCode" to model?.code,
+            "productType" to model?.type,
+            "customerName" to "Outgoing",
         )
 
         FirebaseFirestore
