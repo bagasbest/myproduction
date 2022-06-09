@@ -17,6 +17,7 @@
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_invoice.xml" value="0.2" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_invoice_detail.xml" value="0.264" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_item_history.xml" value="0.2" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_item_history_detail.xml" value="0.19410004275331338" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_login.xml" value="0.23645833333333333" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_main.xml" value="0.23645833333333333" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_managing_sales.xml" value="0.2" />
@@ -32,7 +33,7 @@
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_settings.xml" value="0.23645833333333333" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_single_herbs.xml" value="0.2" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_surat_jalan.xml" value="0.19410004275331338" />
-        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_surat_jalan_detail.xml" value="0.2" />
+        <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/activity_surat_jalan_detail.xml" value="0.264" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/fragment_formulated.xml" value="0.19410004275331338" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/fragment_herb.xml" value="0.19410004275331338" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/layout/item_filter.xml" value="0.2" />

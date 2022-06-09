@@ -1,5 +1,9 @@
 package com.project.myproduction.ui.item_history
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class ItemHistoryModel(
     var uid: String? = null,
     var status: String? = null,
@@ -11,4 +15,4 @@ data class ItemHistoryModel(
     var productId : String? = null,
     var productCode : String? = null,
     var productType : String? = null,
-)
+) : Parcelable

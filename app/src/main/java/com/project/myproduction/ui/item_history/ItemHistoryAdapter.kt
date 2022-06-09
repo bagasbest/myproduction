@@ -1,6 +1,7 @@
 package com.project.myproduction.ui.item_history
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,6 +48,13 @@ class ItemHistoryAdapter : RecyclerView.Adapter<ItemHistoryAdapter.ViewHolder>()
                         view6.backgroundTintList = ContextCompat.getColorStateList(itemView.context, android.R.color.holo_blue_dark)
                     }
                 }
+
+                cv.setOnClickListener {
+                    val intent = Intent(itemView.context, ItemHistoryDetailActivity::class.java)
+                    intent.putExtra(ItemHistoryDetailActivity.EXTRA_DATA, model)
+                    itemView.context.startActivity(intent)
+                }
+
             }
         }
     }
