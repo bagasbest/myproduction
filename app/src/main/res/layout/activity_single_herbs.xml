@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.obat_umum.SingleHerbsActivity">
 
-
-
     <ImageButton
         android:id="@+id/settingBtn"
         android:layout_width="40dp"
@@ -32,6 +30,19 @@
         android:contentDescription="@string/image"
         android:src="@drawable/ic_baseline_sort_24"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/printStock"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16sp"
+        android:background="@drawable/bg_rounded_btn"
+        android:backgroundTint="@color/blue"
+        android:contentDescription="@string/image"
+        android:src="@drawable/ic_baseline_print_24"
+        app:layout_constraintEnd_toStartOf="@+id/add"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
