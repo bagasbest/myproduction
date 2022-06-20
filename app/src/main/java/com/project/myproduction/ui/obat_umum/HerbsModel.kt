@@ -12,3 +12,8 @@ data class HerbsModel(
     var price: Long? = 0L,
     var stock: Long? = 0L,
 ) : Parcelable
+
+data class HerbsStockModel(
+    var name: String? = null,
+    var stock: Long? = 0L,
+)

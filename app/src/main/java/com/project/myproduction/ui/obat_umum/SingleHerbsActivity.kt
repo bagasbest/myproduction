@@ -15,7 +15,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.firestore.FirebaseFirestore
 import com.itextpdf.text.*
 import com.itextpdf.text.pdf.BaseFont
 import com.itextpdf.text.pdf.PdfWriter
@@ -35,7 +40,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class SingleHerbsActivity : AppCompatActivity() {
 
@@ -46,6 +51,8 @@ class SingleHerbsActivity : AppCompatActivity() {
     private var realFileName = ""
     private val fileName: String = "stock_single_herb.pdf"
     private var date = ""
+    private var dateFirst = ""
+    private var dateSecond = ""
     private var singleHerbList = ArrayList<HerbsModel>()
 
     override fun onResume() {
@@ -110,28 +117,58 @@ class SingleHerbsActivity : AppCompatActivity() {
     }
 
     private fun printStock() {
-        Dexter.withContext(this)
-            .withPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            .withListener(object : PermissionListener {
-                override fun onPermissionGranted(response: PermissionGrantedResponse?) {
-                    createPDFFile(Common.getAppPath(this@SingleHerbsActivity) + fileName)
-                }
+        /// show date range picker
+        val now = Calendar.getInstance()
+        val datePicker: MaterialDatePicker<*> =
+            MaterialDatePicker.Builder.dateRangePicker().setCalendarConstraints(CalendarConstraints.Builder().setValidator(
+                DateValidatorPointBackward.now()).build())
+                .setSelection(androidx.core.util.Pair.create(now.timeInMillis, now.timeInMillis)).setTitleText("Filter (dari-ke) Tanggal Cetak Stok").build()
 
-                override fun onPermissionDenied(response: PermissionDeniedResponse?) {
+        datePicker.show(supportFragmentManager, datePicker.toString())
+        datePicker.addOnPositiveButtonClickListener {
 
-                }
+            val prendiRange = datePicker.selection as androidx.core.util.Pair<*, *>?
+            val formatFirst = prendiRange?.first.toString().toLong() - 25200000 /// decrease 7 hour
+            val formatSecond = now.timeInMillis
 
-                override fun onPermissionRationaleShouldBeShown(
-                    permission: PermissionRequest?,
-                    token: PermissionToken?
-                ) {
+            val sdf = SimpleDateFormat("dd")
+            dateFirst = sdf.format(Date(formatFirst))
+            dateSecond = sdf.format(Date(formatSecond))
 
-                }
+            initViewModelStockByDates(formatFirst, formatSecond)
 
-            })
-            .withErrorListener {
-                Log.e("Dexter", "There was an error: $it")
-            }.check()
+
+        }
+    }
+
+    private fun initViewModelStockByDates(formatFirst: Long, formatSecond: Long) {
+        val viewModel = ViewModelProvider(this)[StockViewModel::class.java]
+
+        viewModel.setListStock(formatFirst, formatSecond)
+        viewModel.getStock().observe(this) { stockList ->
+            Dexter.withContext(this)
+                .withPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(object : PermissionListener {
+                    override fun onPermissionGranted(response: PermissionGrantedResponse?) {
+                        createPDFFile(Common.getAppPath(this@SingleHerbsActivity) + fileName, stockList)
+                    }
+
+                    override fun onPermissionDenied(response: PermissionDeniedResponse?) {
+
+                    }
+
+                    override fun onPermissionRationaleShouldBeShown(
+                        permission: PermissionRequest?,
+                        token: PermissionToken?
+                    ) {
+
+                    }
+
+                })
+                .withErrorListener {
+                    Log.e("Dexter", "There was an error: $it")
+                }.check()
+        }
     }
 
     private fun sortProduct() {
@@ -239,10 +276,13 @@ class SingleHerbsActivity : AppCompatActivity() {
         }
         viewModel.getHerbs().observe(this) { herbList ->
             if (herbList.size > 0) {
-                singleHerbList.clear()
-                singleHerbList.addAll(herbList)
                 adapter?.setData(herbList)
                 binding?.noData?.visibility = View.GONE
+                if (query == "") {
+                    singleHerbList.clear()
+                    singleHerbList.addAll(herbList)
+                    saveStock()
+                }
             } else {
                 binding?.noData?.visibility = View.VISIBLE
             }
@@ -250,7 +290,37 @@ class SingleHerbsActivity : AppCompatActivity() {
         }
     }
 
-    private fun createPDFFile(path: String) {
+    private fun saveStock() {
+        val c = Calendar.getInstance()
+        val df = SimpleDateFormat("dd-MM-yyyy")
+        val dates = df.format(c.time)
+
+        val listOfStock = ArrayList<HerbsStockModel>()
+        listOfStock.clear()
+        for (i in singleHerbList.indices) {
+            val model = HerbsStockModel()
+            model.name = singleHerbList[i].name
+            model.stock = singleHerbList[i].stock
+
+            listOfStock.add(model)
+        }
+
+        val data = mapOf(
+            "uid" to dates,
+            "dateInMillis" to c.timeInMillis,
+            "date" to dates.substring(0, 2),
+            "data" to listOfStock,
+        )
+
+        FirebaseFirestore
+            .getInstance()
+            .collection("single_herb_stocks")
+            .document(dates)
+            .set(data)
+
+    }
+
+    private fun createPDFFile(path: String, stockList: ArrayList<StockModel>) {
         if (File(path).exists()) {
             File(path).delete()
         }
@@ -287,7 +357,7 @@ class SingleHerbsActivity : AppCompatActivity() {
             addNewItemWithLeftAndRight(
                 document,
                 "PT.Primax Asia Link",
-                "Tanggal: $date",
+                "Tanggal: $dateFirst - $dateSecond",
                 valueStyle,
                 valueStyle
             )
@@ -311,10 +381,18 @@ class SingleHerbsActivity : AppCompatActivity() {
 
 
             for (i in singleHerbList.indices) {
+                var stock = ""
+                for(j in stockList.indices) {
+                    if(j>0) {
+                        stock += "   |   " + stockList[j].data!![i].stock
+                    } else {
+                        stock += stockList[j].data!![i].stock
+                    }
+                }
                 addNewItemWithLeftAndRight(
                     document,
                     singleHerbList[i].name!!,
-                    singleHerbList[i].stock!!.toString(),
+                    stock,
                     valueStyle,
                     valueStyle
                 )
