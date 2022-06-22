@@ -30,7 +30,11 @@ class POAdapter(private val poList: ArrayList<POModel>, private val poBtn: Butto
                 delete.visibility = View.VISIBLE
                 name.text = model.name
                 code.text = "Kode: ${model.code}"
-                type.text = "Jenis: ${model.type}"
+                if(model.category == "common") {
+                    type.text = "Jenis: ${model.type} ${model.size}"
+                } else {
+                    type.text = "Jenis: ${model.type}"
+                }
                 price.text = "Harga: Rp.${format.format(model.price)}"
                 stock.text = "Qty: ${model.qty}"
 

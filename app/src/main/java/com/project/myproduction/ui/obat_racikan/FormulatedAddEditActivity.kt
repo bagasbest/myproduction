@@ -92,12 +92,14 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
                         val code = material.code
                         val type = material.type
                         val uid = material.uid
+                        val size = material.size
 
                         val model = MaterialModel()
                         model.name = name
                         model.uid = uid
                         model.code = code
                         model.type = type
+                        model.size = size
                         model.collection = "material"
 
                         listOfMaterial.add(model)
@@ -113,12 +115,14 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
                         val code = material.code
                         val type = material.type
                         val uid = material.uid
+                        val size = material.size
 
                         val model = MaterialModel()
                         model.name = name
                         model.uid = uid
                         model.code = code
                         model.type = type
+                        model.size = size
                         model.collection = "common_herbs"
 
                         listOfMaterial.add(model)

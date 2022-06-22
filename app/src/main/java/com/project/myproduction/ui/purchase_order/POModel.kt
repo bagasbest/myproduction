@@ -10,6 +10,7 @@ data class POModel(
     var name: String? = null,
     var code: String? = null,
     var type: String? = null,
+    var size: String? = null,
     var price: Long? = 0L,
     var qty: Long? = 0L,
     var salesName: String? = null,

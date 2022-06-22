@@ -187,7 +187,7 @@ class OrderDetailActivity : AppCompatActivity() {
                     addNewItemWithLeftAndRight(
                         document,
                         model?.product!![i].name!!,
-                        "${model?.product!![i].qty}, Rp.${format.format(model?.product!![i].price)}",
+                        "(${model?.product!![i].qty} / ${model?.product!![i].type} ${model?.product!![i].size}), Rp.${format.format(model?.product!![i].price)}",
                         valueStyle,
                         valueStyle
                     )

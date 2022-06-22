@@ -15,7 +15,7 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_weight="0.1"
+        android:layout_weight="0.3"
         android:layout_height="wrap_content"
         android:text="1"
         android:textColor="@color/black"
@@ -23,7 +23,7 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_weight="0.4"
+        android:layout_weight="0.2"
         android:layout_height="wrap_content"
         android:text="Rp."
         android:textColor="@color/black"

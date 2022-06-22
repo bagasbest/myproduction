@@ -136,7 +136,7 @@ class ItemHistoryActivity : AppCompatActivity() {
                 val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
                 val format = sdf.format(Date(selection.toString().toLong()))
                 dateStartBtn.text = format
-                from = selection.toString().toLong()
+                from = selection.toString().toLong() - 25200000
             }
         }
 

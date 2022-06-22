@@ -194,7 +194,7 @@
                         android:id="@+id/qty"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.1"
+                        android:layout_weight="0.3"
                         android:text="Qty"
                         android:textColor="@color/black"
                         android:textStyle="bold" />
@@ -203,7 +203,7 @@
                         android:id="@+id/totalPrice"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.4"
+                        android:layout_weight="0.2"
                         android:text="Total"
                         android:textColor="@color/black"
                         android:textStyle="bold" />

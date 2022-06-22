@@ -222,6 +222,7 @@ class HerbsDetailActivity : AppCompatActivity() {
                 "nameTemp" to model?.name?.lowercase(Locale.getDefault()),
                 "code" to model?.code,
                 "type" to model?.type,
+                "size" to model?.size,
                 "price" to model?.price!! * qtyProduct.toLong(),
                 "qty" to qtyProduct.toLong(),
                 "salesName" to name,

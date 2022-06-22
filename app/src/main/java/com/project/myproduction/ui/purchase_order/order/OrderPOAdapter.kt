@@ -27,7 +27,7 @@ class OrderPOAdapter: RecyclerView.Adapter<OrderPOAdapter.ViewHolder>() {
             with(binding) {
 
                 name.text = model.name
-                qty.text = model.qty.toString()
+                qty.text = "${model.qty} / ${model.type} ${model.size}"
                 totalPrice.text = "Rp.${format.format(model.price)}"
 
             }

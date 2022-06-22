@@ -31,6 +31,7 @@ class POViewModel : ViewModel() {
                         model.price = document.data["price"] as Long
                         model.qty = document.data["qty"] as Long
                         model.type = document.data["type"].toString()
+                        model.size = document.data["size"].toString()
                         model.salesName = document.data["salesName"].toString()
                         model.salesId = document.data["salesId"].toString()
                         model.productId = document.data["productId"].toString()
