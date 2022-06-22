@@ -32,7 +32,7 @@ class MaterialAdapter : RecyclerView.Adapter<MaterialAdapter.ViewHolder>() {
 
                 name.text = model.name
                 code.text = "Kode: ${model.code}"
-                type.text = "Jenis: ${model.type}"
+                type.text = "Jenis: ${model.type} ${model.size}"
                 price.text = "Harga: Rp.${format.format(model.price)}"
                 stock.text = "Stok: ${model.stock}"
 

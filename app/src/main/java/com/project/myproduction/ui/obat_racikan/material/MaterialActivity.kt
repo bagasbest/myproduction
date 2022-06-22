@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.firestore.FirebaseFirestore
 import com.project.myproduction.R
 import com.project.myproduction.databinding.ActivityMaterialBinding
 import com.project.myproduction.ui.obat_umum.HerbsViewModel
@@ -21,6 +22,7 @@ class MaterialActivity : AppCompatActivity() {
     private var adapter: MaterialAdapter?= null
     private var from: String? = null
     private var to: String? = null
+    private val getListMaterial = ArrayList<MaterialModel>()
 
 
     override fun onResume() {
@@ -62,8 +64,34 @@ class MaterialActivity : AppCompatActivity() {
 
         })
 
+        binding?.update?.setOnClickListener {
+            updateProduct()
+        }
+
         binding?.sort?.setOnClickListener {
             sortProduct()
+        }
+    }
+
+    private fun updateProduct() {
+
+
+        for(i in getListMaterial.indices) {
+
+            val data = mapOf(
+                "size" to "gram",
+                "type" to getListMaterial[i].type?.substring(0,
+                    getListMaterial[i].type?.length?.minus(2) ?: 0
+                ),
+                "pricePerSize" to 0L,
+                "stockPerSize" to 0L,
+            )
+
+            FirebaseFirestore
+                .getInstance()
+                .collection("material")
+                .document(getListMaterial[i].uid!!)
+                .update(data)
         }
     }
 
@@ -160,6 +188,10 @@ class MaterialActivity : AppCompatActivity() {
         }
         viewModel.getMaterial().observe(this) { herbList ->
             if (herbList.size > 0) {
+                if(query == "") {
+                    getListMaterial.clear()
+                    getListMaterial.addAll(herbList)
+                }
                 adapter?.setData(herbList)
                 binding?.noData?.visibility = View.GONE
             } else {

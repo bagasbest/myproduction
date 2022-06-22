@@ -46,6 +46,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
+        android:id="@+id/update"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16sp"
+        android:visibility="gone"
+        android:background="@drawable/bg_rounded_btn"
+        android:backgroundTint="@color/blue"
+        android:contentDescription="@string/image"
+        app:layout_constraintEnd_toEndOf="@+id/printStock"
+        app:layout_constraintEnd_toStartOf="@+id/printStock"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
         android:id="@+id/add"
         android:layout_width="40dp"
         android:layout_height="40dp"

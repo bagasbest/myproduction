@@ -15,4 +15,12 @@
         <item>Semua</item>
     </string-array>
 
+    <string-array name="size">
+        <item>gram</item>
+        <item>mg</item>
+        <item>botol</item>
+        <item>box</item>
+    </string-array>
+
+
 </resources>

@@ -9,8 +9,11 @@ data class HerbsModel(
     var name: String? = null,
     var code: String? = null,
     var type: String? = null,
+    var size: String? = null,
     var price: Long? = 0L,
+    var pricePerSize: Long? = 0L,
     var stock: Long? = 0L,
+    var stockPerSize: Long? = 0L,
 ) : Parcelable
 
 data class HerbsStockModel(

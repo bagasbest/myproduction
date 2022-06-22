@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
@@ -45,7 +46,16 @@ class HerbsDetailActivity : AppCompatActivity() {
         binding?.name?.setText(model?.name)
         binding?.code?.setText(model?.code)
         binding?.type?.setText(model?.type)
+        binding?.size?.setText(model?.size)
         binding?.price?.setText("Rp.${formatter.format(model?.price)}")
+        Log.e("ta", model?.pricePerSize.toString())
+        if(model?.pricePerSize != null) {
+            binding?.pricePerSize?.setText("Rp.${formatter.format(model?.pricePerSize)}")
+            binding?.stockSatuan?.setText(model?.stockPerSize.toString())
+        } else {
+            binding?.pricePerSize?.setText("Rp.0")
+            binding?.stockSatuan?.setText("0")
+        }
         binding?.stock?.setText(model?.stock.toString())
 
         binding?.settingBtn?.setOnClickListener {
@@ -93,7 +103,7 @@ class HerbsDetailActivity : AppCompatActivity() {
     }
 
     private fun stockTaking() {
-        val currentStock = model?.stock
+        val currentStock = binding?.stock?.text.toString().toLong()
         val stockEt: TextInputEditText
         val confirmBtn: Button
         val pb: ProgressBar
@@ -156,15 +166,24 @@ class HerbsDetailActivity : AppCompatActivity() {
 
     private fun cutStock(stock: String, dialog: Dialog, pb: ProgressBar) {
         val resultStock = binding?.stock?.text.toString().toLong() - stock.toLong()
+        val stockPerSize = resultStock * model?.type!!.toLong()
+
+        val data = mapOf(
+            "stock" to resultStock,
+            "stockPerSize" to stockPerSize,
+        )
+
+
         FirebaseFirestore
             .getInstance()
             .collection("common_herbs")
             .document(model?.uid!!)
-            .update("stock", resultStock)
+            .update(data)
             .addOnCompleteListener {
                 if(it.isSuccessful) {
                     dialog.dismiss()
                     binding?.stock?.setText(resultStock.toString())
+                    binding?.stockSatuan?.setText(stockPerSize.toString())
                     pb.visibility = View.GONE
                     Toast.makeText(this, "Sukses mengambil stok, log ini akan masuk item history", Toast.LENGTH_SHORT).show()
                 } else {
@@ -284,7 +303,7 @@ class HerbsDetailActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun addStock() {
-        val currentStock = model?.stock
+        val currentStock = binding?.stock?.text.toString().toLong()
         val stockEt: TextInputEditText
         val confirmBtn: Button
         val pb: ProgressBar
@@ -301,22 +320,29 @@ class HerbsDetailActivity : AppCompatActivity() {
                 Toast.makeText(this, "Maaf, stok minimal 1", Toast.LENGTH_SHORT).show()
             } else {
                 pb.visibility = View.VISIBLE
-                if (currentStock != null) {
-                    FirebaseFirestore
-                        .getInstance()
-                        .collection("common_herbs")
-                        .document(model?.uid!!)
-                        .update("stock", currentStock+stock.toLong())
-                        .addOnCompleteListener {
-                            if(it.isSuccessful) {
-                                binding?.stock?.setText("${currentStock+stock.toLong()}")
-                                incomingStock(dialog, pb, stock)
-                            } else {
-                                dialog.dismiss()
-                                Toast.makeText(this, "Gagal mengupdate stok, silahkan periksa koneksi internet anda dan coba lagi nanti", Toast.LENGTH_SHORT).show()
-                            }
+
+                val stockPerSize = (currentStock+stock.toLong()) * binding?.type?.text?.toString()!!.toLong()
+
+                val data = mapOf(
+                    "stock" to currentStock+stock.toLong(),
+                    "stockPerSize" to stockPerSize,
+                )
+
+                FirebaseFirestore
+                    .getInstance()
+                    .collection("common_herbs")
+                    .document(model?.uid!!)
+                    .update(data)
+                    .addOnCompleteListener {
+                        if(it.isSuccessful) {
+                            binding?.stockSatuan?.setText(stockPerSize.toString())
+                            binding?.stock?.setText("${currentStock+stock.toLong()}")
+                            incomingStock(dialog, pb, stock)
+                        } else {
+                            dialog.dismiss()
+                            Toast.makeText(this, "Gagal mengupdate stok, silahkan periksa koneksi internet anda dan coba lagi nanti", Toast.LENGTH_SHORT).show()
                         }
-                }
+                    }
             }
         }
 

@@ -27,8 +27,11 @@ class MaterialViewModel : ViewModel() {
                         model.code = document.data["code"].toString()
                         model.uid = document.data["uid"].toString()
                         model.name = document.data["name"].toString()
+                        model.size = document.data["size"].toString()
                         model.price = document.data["price"] as Long
+                        model.pricePerSize = document.data["pricePerSize"] as? Long
                         model.stock = document.data["stock"] as Long
+                        model.stockPerSize = document.data["stockPerSize"] as? Long
                         model.type = document.data["type"].toString()
 
 
@@ -58,8 +61,11 @@ class MaterialViewModel : ViewModel() {
                         model.code = document.data["code"].toString()
                         model.uid = document.data["uid"].toString()
                         model.name = document.data["name"].toString()
+                        model.size = document.data["size"].toString()
                         model.price = document.data["price"] as Long
+                        model.pricePerSize = document.data["pricePerSize"] as? Long
                         model.stock = document.data["stock"] as Long
+                        model.stockPerSize = document.data["stockPerSize"] as? Long
                         model.type = document.data["type"].toString()
 
 
@@ -89,8 +95,11 @@ class MaterialViewModel : ViewModel() {
                         model.code = document.data["code"].toString()
                         model.uid = document.data["uid"].toString()
                         model.name = document.data["name"].toString()
+                        model.size = document.data["size"].toString()
                         model.price = document.data["price"] as Long
+                        model.pricePerSize = document.data["pricePerSize"] as? Long
                         model.stock = document.data["stock"] as Long
+                        model.stockPerSize = document.data["stockPerSize"] as? Long
                         model.type = document.data["type"].toString()
 
 
@@ -121,8 +130,11 @@ class MaterialViewModel : ViewModel() {
                         model.code = document.data["code"].toString()
                         model.uid = document.data["uid"].toString()
                         model.name = document.data["name"].toString()
+                        model.size = document.data["size"].toString()
                         model.price = document.data["price"] as Long
+                        model.pricePerSize = document.data["pricePerSize"] as? Long
                         model.stock = document.data["stock"] as Long
+                        model.stockPerSize = document.data["stockPerSize"] as? Long
                         model.type = document.data["type"].toString()
 
 
@@ -152,8 +164,11 @@ class MaterialViewModel : ViewModel() {
                         model.code = document.data["code"].toString()
                         model.uid = document.data["uid"].toString()
                         model.name = document.data["name"].toString()
+                        model.size = document.data["size"].toString()
                         model.price = document.data["price"] as Long
+                        model.pricePerSize = document.data["pricePerSize"] as? Long
                         model.stock = document.data["stock"] as Long
+                        model.stockPerSize = document.data["stockPerSize"] as? Long
                         model.type = document.data["type"].toString()
 
 
@@ -185,8 +200,11 @@ class MaterialViewModel : ViewModel() {
                         model.code = document.data["code"].toString()
                         model.uid = document.data["uid"].toString()
                         model.name = document.data["name"].toString()
+                        model.size = document.data["size"].toString()
                         model.price = document.data["price"] as Long
+                        model.pricePerSize = document.data["pricePerSize"] as? Long
                         model.stock = document.data["stock"] as Long
+                        model.stockPerSize = document.data["stockPerSize"] as? Long
                         model.type = document.data["type"].toString()
 
 
@@ -217,8 +235,11 @@ class MaterialViewModel : ViewModel() {
                         model.code = document.data["code"].toString()
                         model.uid = document.data["uid"].toString()
                         model.name = document.data["name"].toString()
+                        model.size = document.data["size"].toString()
                         model.price = document.data["price"] as Long
+                        model.pricePerSize = document.data["pricePerSize"] as? Long
                         model.stock = document.data["stock"] as Long
+                        model.stockPerSize = document.data["stockPerSize"] as? Long
                         model.type = document.data["type"].toString()
 
 

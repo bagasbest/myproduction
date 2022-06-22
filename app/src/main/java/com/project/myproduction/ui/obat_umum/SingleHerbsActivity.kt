@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
-import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
@@ -40,6 +39,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SingleHerbsActivity : AppCompatActivity() {
@@ -113,6 +113,28 @@ class SingleHerbsActivity : AppCompatActivity() {
 
         binding?.sort?.setOnClickListener {
             sortProduct()
+        }
+
+        binding?.update?.setOnClickListener {
+            updateProduct()
+        }
+    }
+
+    private fun updateProduct() {
+        for(i in singleHerbList.indices) {
+
+            val data = mapOf(
+                "size" to "gram",
+                "type" to "100",
+                "pricePerSize" to 0L,
+                "stockPerSize" to 0L,
+            )
+
+            FirebaseFirestore
+                .getInstance()
+                .collection("common_herbs")
+                .document(singleHerbList[i].uid!!)
+                .update(data)
         }
     }
 
@@ -368,10 +390,18 @@ class SingleHerbsActivity : AppCompatActivity() {
                 valueStyle,
                 valueStyle
             )
+
+            ///loop date first into date last
+            var date = ""
+            for(i in stockList.indices) {
+                date += "${stockList[i].date}, "
+            }
+
             addNewItemWithLeftAndRight(
                 document,
                 "Tel: 021-4587-4199",
-                "",
+                "Tanggal: ${date.substring(0, date.length-1)}",
+
                 valueStyle,
                 valueStyle
             )
