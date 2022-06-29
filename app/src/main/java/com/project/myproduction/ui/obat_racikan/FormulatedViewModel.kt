@@ -30,6 +30,8 @@ class FormulatedViewModel : ViewModel() {
                         model.name = document.data["name"].toString()
                         model.price = document.data["price"] as Long
                         model.type = document.data["type"].toString()
+                        model.size = document.data["size"].toString()
+                        model.nameTemp = document.data["nameTemp"].toString()
                         model.material = document.toObject(FormulatedModel::class.java).material
 
                         listData.add(model)
@@ -59,6 +61,8 @@ class FormulatedViewModel : ViewModel() {
                         model.uid = document.data["uid"].toString()
                         model.name = document.data["name"].toString()
                         model.price = document.data["price"] as Long
+                        model.size = document.data["size"].toString()
+                        model.nameTemp = document.data["nameTemp"].toString()
                         model.type = document.data["type"].toString()
                         model.material = document.toObject(FormulatedModel::class.java).material
 
@@ -89,6 +93,8 @@ class FormulatedViewModel : ViewModel() {
                         model.uid = document.data["uid"].toString()
                         model.name = document.data["name"].toString()
                         model.price = document.data["price"] as Long
+                        model.size = document.data["size"].toString()
+                        model.nameTemp = document.data["nameTemp"].toString()
                         model.type = document.data["type"].toString()
                         model.material = document.toObject(FormulatedModel::class.java).material
 
@@ -119,6 +125,8 @@ class FormulatedViewModel : ViewModel() {
                         model.uid = document.data["uid"].toString()
                         model.name = document.data["name"].toString()
                         model.price = document.data["price"] as Long
+                        model.size = document.data["size"].toString()
+                        model.nameTemp = document.data["nameTemp"].toString()
                         model.type = document.data["type"].toString()
                         model.material = document.toObject(FormulatedModel::class.java).material
 
@@ -149,6 +157,8 @@ class FormulatedViewModel : ViewModel() {
                         model.uid = document.data["uid"].toString()
                         model.name = document.data["name"].toString()
                         model.price = document.data["price"] as Long
+                        model.size = document.data["size"].toString()
+                        model.nameTemp = document.data["nameTemp"].toString()
                         model.type = document.data["type"].toString()
                         model.material = document.toObject(FormulatedModel::class.java).material
 
@@ -182,6 +192,8 @@ class FormulatedViewModel : ViewModel() {
                         model.uid = document.data["uid"].toString()
                         model.name = document.data["name"].toString()
                         model.price = document.data["price"] as Long
+                        model.size = document.data["size"].toString()
+                        model.nameTemp = document.data["nameTemp"].toString()
                         model.type = document.data["type"].toString()
                         model.material = document.toObject(FormulatedModel::class.java).material
 
@@ -215,6 +227,8 @@ class FormulatedViewModel : ViewModel() {
                         model.uid = document.data["uid"].toString()
                         model.name = document.data["name"].toString()
                         model.price = document.data["price"] as Long
+                        model.size = document.data["size"].toString()
+                        model.nameTemp = document.data["nameTemp"].toString()
                         model.type = document.data["type"].toString()
                         model.material = document.toObject(FormulatedModel::class.java).material
 

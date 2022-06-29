@@ -76,36 +76,90 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:weightSum="2"
+                android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/type"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Jenis/Ukuran (contoh: 100gr, 50gr, dll)"
-                    android:inputType="text" />
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Ukuran"
+                        android:inputType="number" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/price"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayout123"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
                     android:layout_height="wrap_content"
-                    android:hint="Harga"
-                    android:inputType="number" />
+                    android:layout_marginTop="10dp">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.rosemaryapp.amazingspinner.AmazingSpinner
+                        android:id="@+id/size"
+                        style="@style/Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Kemasan" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_marginTop="16sp"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Harga"
+            android:inputType="number"
+            android:text="0"
+            android:textColor="@color/black" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update Harga"
+        android:id="@+id/updatePriceTotal"
+        android:layout_marginTop="3dp"
+        android:textAllCaps="false"
+        android:layout_marginEnd="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -152,7 +206,7 @@
                 android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:hintText="Pilih Bahan Baku" />
+                app:hintText="Katalog obat racikan" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -174,6 +228,24 @@
                 android:textColor="@color/black"
                 android:layout_marginTop="16dp"
                 android:text="Silahkan perkisa kembali list bahan diatas sebelum menyimpan racikan ini!." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginTop="16dp"
+                android:text="Pastikan anda telah mengupdate harga, jika sebelumnya ada penambahan / pengurangan bahan atau stok, atau bisa klik update harga dibawah ini untuk mengupdate harga secara otomatis" />
+
+            <Button
+                android:id="@+id/updatePriceTotal2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16sp"
+                android:text="Update Harga"
+                android:textAllCaps="false"
+                android:background="@drawable/bg_rounded_btn"
+                android:foreground="?android:attr/selectableItemBackground" />
 
 
             <ProgressBar

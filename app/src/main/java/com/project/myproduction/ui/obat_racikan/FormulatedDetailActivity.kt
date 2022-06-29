@@ -44,6 +44,7 @@ class FormulatedDetailActivity : AppCompatActivity() {
         binding?.name?.setText(model?.name)
         binding?.code?.setText(model?.code)
         binding?.type?.setText(model?.type)
+        binding?.size?.setText(model?.size)
         binding?.price?.setText("Rp.${formatter.format(model?.price)}")
         initRecyclerView()
 

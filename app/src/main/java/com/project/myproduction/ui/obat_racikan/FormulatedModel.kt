@@ -8,8 +8,10 @@ import kotlinx.parcelize.Parcelize
 data class FormulatedModel(
 
     var name: String? = null,
+    var nameTemp: String? = null,
     var code: String? = null,
     var type: String? = null,
+    var size: String? = null,
     var price: Long? = 0L,
     var uid: String? = null,
     var material: ArrayList<MaterialModel>? = null,

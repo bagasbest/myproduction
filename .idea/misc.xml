@@ -3,7 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Projek Android/MyProduction/app/src/main/res/layout/activity_formulated_add_edit.xml" value="0.19410004275331338" />
+        <entry key="..\:/Projek Android/MyProduction/app/src/main/res/layout/activity_formulated_add_edit.xml" value="0.264" />
+        <entry key="..\:/Projek Android/MyProduction/app/src/main/res/layout/activity_formulated_detail.xml" value="0.2" />
         <entry key="..\:/Projek Android/MyProduction/app/src/main/res/layout/activity_herbs_add_edit.xml" value="0.264" />
         <entry key="..\:/Projek Android/MyProduction/app/src/main/res/layout/activity_herbs_detail.xml" value="0.2" />
         <entry key="..\:/Projek Android/MyProduction/app/src/main/res/layout/activity_material.xml" value="0.264" />
@@ -11,6 +12,7 @@
         <entry key="..\:/Projek Android/MyProduction/app/src/main/res/layout/activity_material_detail.xml" value="0.19410004275331338" />
         <entry key="..\:/Projek Android/MyProduction/app/src/main/res/layout/activity_order_detail.xml" value="0.19410004275331338" />
         <entry key="..\:/Projek Android/MyProduction/app/src/main/res/layout/activity_single_herbs.xml" value="0.264" />
+        <entry key="..\:/Projek Android/MyProduction/app/src/main/res/layout/item_material.xml" value="0.264" />
         <entry key="..\:/Projek Android/MyProduction/app/src/main/res/layout/item_po.xml" value="0.19410004275331338" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/drawable/bg_border.xml" value="0.1755" />
         <entry key="..\:/TUBES_GALERI/MyProduction/app/src/main/res/drawable/bg_login.xml" value="0.1765" />

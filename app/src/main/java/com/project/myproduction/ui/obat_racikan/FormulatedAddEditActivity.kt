@@ -3,7 +3,6 @@ package com.project.myproduction.ui.obat_racikan
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -33,6 +32,7 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
     private lateinit var iFirebaseLoadDone: IFirebaseLoadDone
     private var materialOrCommon = ""
     private var option: String? = null
+    private var size = ""
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +43,7 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
         iFirebaseLoadDone = this
 
         option = intent.getStringExtra(OPTION)
+        showDropdownSize()
         if (option == "add") {
             binding?.title?.text = "Buat Racikan Baru"
             binding?.saveBtn?.text = "Simpan Racikan Ini"
@@ -86,11 +87,14 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
             (object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                     /// ketika berganti ke bahan umum / racikan ada sedikit kendala dimana otomatis menyimpan index 0
+                    binding?.price?.setText("0")
                     if(materialOrCommon == "material") {
                         val material = materialList[p2]
                         val name = material.name
                         val code = material.code
                         val type = material.type
+                        val pricePerSize = material.pricePerSize
+                        val stockPerSize = material.stockPerSize
                         val uid = material.uid
                         val size = material.size
 
@@ -98,6 +102,8 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
                         model.name = name
                         model.uid = uid
                         model.code = code
+                        model.pricePerSize = pricePerSize
+                        model.stockPerSize = stockPerSize
                         model.type = type
                         model.size = size
                         model.collection = "material"
@@ -114,6 +120,8 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
                         val name = material.name
                         val code = material.code
                         val type = material.type
+                        val pricePerSize = material.pricePerSize
+                        val stockPerSize = material.stockPerSize
                         val uid = material.uid
                         val size = material.size
 
@@ -122,6 +130,8 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
                         model.uid = uid
                         model.code = code
                         model.type = type
+                        model.pricePerSize = pricePerSize
+                        model.stockPerSize = stockPerSize
                         model.size = size
                         model.collection = "common_herbs"
 
@@ -138,6 +148,37 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
 
                 }
             })
+
+        binding?.updatePriceTotal?.setOnClickListener {
+           updatePriceTotal()
+        }
+
+        binding?.updatePriceTotal2?.setOnClickListener {
+            updatePriceTotal()
+        }
+    }
+
+    private fun updatePriceTotal() {
+        var totalPrice = 0L
+        for(i in listOfMaterial.indices) {
+            val itemPrice : Long? = listOfMaterial[i].qty?.times(listOfMaterial[i].pricePerSize!!)
+            totalPrice += itemPrice!!
+        }
+        binding?.price?.setText(totalPrice.toString())
+    }
+
+    private fun showDropdownSize() {
+        val adapter = ArrayAdapter.createFromResource(
+            this,
+            R.array.size, android.R.layout.simple_list_item_1
+        )
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        // Apply the adapter to the spinner
+        binding?.size?.setAdapter(adapter)
+        binding?.size?.setOnItemClickListener { _, _, _, _ ->
+            size = binding?.size!!.text.toString()
+        }
     }
 
     private fun formValidation(option: String?) {
@@ -148,16 +189,19 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
 
         when {
             name.isEmpty() -> {
-                Toast.makeText(this, "Nama Obat tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Nama Racikan tidak boleh kosong", Toast.LENGTH_SHORT).show()
             }
             code.isEmpty() -> {
-                Toast.makeText(this, "Kode Obat tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Kode Racikan tidak boleh kosong", Toast.LENGTH_SHORT).show()
             }
             type.isEmpty() -> {
-                Toast.makeText(this, "Jenis/Ukuran Obat tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Jenis Racikan tidak boleh kosong", Toast.LENGTH_SHORT).show()
+            }
+            size == "" -> {
+                Toast.makeText(this, "Ukuran Racikan tidak boleh kosong", Toast.LENGTH_SHORT).show()
             }
             price.isEmpty() -> {
-                Toast.makeText(this, "Harga Obat tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Harga Racikan tidak boleh kosong", Toast.LENGTH_SHORT).show()
             }
             listOfMaterial.size == 0 -> {
                 Toast.makeText(this, "Komposisi racikan tidak boleh kosong, minimal 1 bahan baku di pilih", Toast.LENGTH_SHORT).show()
@@ -182,6 +226,7 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
                         "nameTemp" to name.lowercase(Locale.getDefault()),
                         "code" to code,
                         "type" to type,
+                        "size" to size,
                         "price" to price.toLong(),
                         "material" to listOfMaterial
                     )
@@ -275,7 +320,7 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
 
     private fun showFailureDialog() {
         AlertDialog.Builder(this)
-            .setTitle("Gagal Menyimpan Data Obat")
+            .setTitle("Gagal Menyimpan Data Racikan")
             .setMessage("Ups, koneksi internet anda bermasalah, silahkan coba lagi nanti")
             .setIcon(R.drawable.ic_baseline_clear_24)
             .setPositiveButton("OK") { dialogInterface, _ ->
@@ -286,8 +331,8 @@ class FormulatedAddEditActivity : AppCompatActivity(), IFirebaseLoadDone  {
 
     private fun showSuccessDialog() {
         AlertDialog.Builder(this)
-            .setTitle("Sukses Menyimpan Data Obat")
-            .setMessage("Produk ini siap di terbitkan di katalog obat umum")
+            .setTitle("Sukses Menyimpan Data Racikan")
+            .setMessage("Produk Racikan ini siap di terbitkan di katalog obat racikan")
             .setIcon(R.drawable.ic_baseline_check_circle_outline_24)
             .setPositiveButton("OK") { dialogInterface, _ ->
                 dialogInterface.dismiss()
