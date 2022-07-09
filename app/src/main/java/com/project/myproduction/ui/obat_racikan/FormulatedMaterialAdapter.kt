@@ -26,7 +26,7 @@ class FormulatedMaterialAdapter(
 
                 name.text = model.name
                 code.text = "Kode: ${model.code}"
-                type.text = "Jenis: ${model.type}"
+                type.text = "Jenis: ${model.type} ${model.size}"
 
                 when (option) {
                     "add" -> {
@@ -42,19 +42,19 @@ class FormulatedMaterialAdapter(
 
                             }
 
-                            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-                            }
-
-                            override fun afterTextChanged(query: Editable?) {
+                            override fun onTextChanged(query: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                                Log.e("as", position.toString())
                                 if(query.toString().isEmpty() || query.toString().toInt() <= 0) {
                                     Toast.makeText(itemView.context, "Kuantitas bahan baku ''${model.name}'' tidak boleh kosong", Toast.LENGTH_SHORT).show()
                                     return
                                 } else {
-                                    Log.e("taf", materialList!![position].name!!)
-                                    Log.e("position", position.toString())
-                                    materialList[position].qty = query.toString().toLong()
+                                    materialList?.get(position)?.qty = query.toString().toLong()
+                                    return
                                 }
+                            }
+
+                            override fun afterTextChanged(query: Editable?) {
+
                             }
                         })
                     }
@@ -113,4 +113,8 @@ class FormulatedMaterialAdapter(
     }
 
     override fun getItemCount(): Int = materialList?.size!!
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
 }

@@ -272,7 +272,7 @@ class FormulatedDetailActivity : AppCompatActivity() {
                 name = "" + it.data!!["name"]
                 userId = "" + it.data!!["uid"]
                 if (role == "admin" || role == "sales") {
-                    binding?.edit?.visibility = View.VISIBLE
+                   // binding?.edit?.visibility = View.VISIBLE
                     binding?.delete?.visibility = View.VISIBLE
                 }
             }
