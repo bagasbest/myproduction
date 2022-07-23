@@ -388,7 +388,7 @@ class InvoiceDetailActivity : AppCompatActivity() {
                     addNewItemWithLeftAndRight(
                         document,
                         model?.product!![0].material!![i].name!!,
-                        "${model?.product!![0].material!![i].qty} / ${model?.product!![0].material!![i].type}",
+                        "${model?.product!![0].material!![i].qty} ${model?.product!![0].material!![i].size}",
                         valueStyle,
                         valueStyle
                     )

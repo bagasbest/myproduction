@@ -139,13 +139,13 @@ class POAdapter(private val poList: ArrayList<POModel>, private val poBtn: Butto
                     .document(model.materialId!![index])
                     .get()
                     .addOnSuccessListener {
-                        val currentStock = it.data!!["stock"] as Long
+                        val currentStock = it.data!!["stockPerSize"] as Long
 
                         FirebaseFirestore
                             .getInstance()
                             .collection(collection)
                             .document(model.materialId!![index])
-                            .update("stock", currentStock + result)
+                            .update("stockPerSize", currentStock + result)
                     }
 
                 /// incoming product for delete po

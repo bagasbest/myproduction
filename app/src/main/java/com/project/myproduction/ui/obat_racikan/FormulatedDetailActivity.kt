@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -103,12 +104,12 @@ class FormulatedDetailActivity : AppCompatActivity() {
                     .document(model?.material!![index].uid!!)
                     .get()
                     .addOnSuccessListener {
-                        val currentStock = it.data!!["stock"] as Long
+                        val currentStock = it.data!!["stockPerSize"] as Long
 
                         if (currentStock < model?.material!![index].qty?.times(qtyProduct.toLong())!!) {
                             Toast.makeText(
                                 this,
-                                "stok bahan baku ${model?.material!![index].name} tidak mencukupi",
+                                "stok per satuan bahan baku ${model?.material!![index].name} tidak mencukupi",
                                 Toast.LENGTH_SHORT
                             ).show()
                             binding?.progressBar?.visibility = View.GONE
@@ -167,14 +168,14 @@ class FormulatedDetailActivity : AppCompatActivity() {
                 .document(model?.material!![index].uid!!)
                 .get()
                 .addOnSuccessListener {
-                    val currentStock = it.data!!["stock"] as Long
+                    val currentStock = it.data!!["stockPerSize"] as Long
                     val newStock = formulatedQtyList[index].times(qty)
                     val result = currentStock - newStock
                     FirebaseFirestore
                         .getInstance()
                         .collection(collection)
                         .document(model?.material!![index].uid!!)
-                        .update("stock", result)
+                        .update("stockPerSize", result)
                 }
         }
 
